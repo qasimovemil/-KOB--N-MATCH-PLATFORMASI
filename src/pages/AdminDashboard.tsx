@@ -51,7 +51,7 @@ const AdminDashboard = () => {
     avgInvestmentSize: 275000
   });
 
-  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([
+  const [recentActivity] = useState<RecentActivity[]>([
     {
       id: '1',
       type: 'registration',
@@ -94,7 +94,7 @@ const AdminDashboard = () => {
     }
   ]);
 
-  const [regionStats, setRegionStats] = useState<RegionStats[]>([
+  const [regionStats] = useState<RegionStats[]>([
     { region: 'Bakı', kosCount: 215, investorCount: 340, matchCount: 58, totalInvestment: 15200000 },
     { region: 'Gəncə-Qazax', kosCount: 98, investorCount: 156, matchCount: 28, totalInvestment: 4800000 },
     { region: 'Şəki-Zaqatala', kosCount: 67, investorCount: 89, matchCount: 18, totalInvestment: 2100000 },

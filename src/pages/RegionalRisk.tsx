@@ -312,7 +312,7 @@ const RegionalRisk = () => {
                     className={`p-4 rounded-lg text-left transition-all ${
                       selectedRegion.region === region.region
                         ? 'bg-primary text-white'
-                        : 'bg-gray-100 hover:bg-gray-200'
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
                     }`}
                   >
                     <div className="font-semibold">{region.region}</div>
