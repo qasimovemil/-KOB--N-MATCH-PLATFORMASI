@@ -1,0 +1,40 @@
+// src/data/investorData.ts
+
+export const INVESTORS = [
+  {
+    id: "i1",
+    name: "Caspian Growth Fund",
+    capitalMinUSD: 300000,
+    capitalMaxUSD: 1000000,
+    sectors: ["Tekstil", "İKT", "İxrac yönümlü"],
+    experienceYears: 8,
+    riskTolerance: "Orta",
+    cooperationModel: ["Pay", "Hibrid"],
+    shortDesc: "Regionda ixrac dəyəri olan istehsal və SaaS layihələrinə fokuslanan VC fondu.",
+    trackRecord: ["TextileX", "CloudCart"],
+  },
+  {
+    id: "i2",
+    name: "AgroImpact Angels",
+    capitalMinUSD: 50000,
+    capitalMaxUSD: 300000,
+    sectors: ["Kənd təsərrüfatı"],
+    experienceYears: 12,
+    riskTolerance: "Aşağı",
+    cooperationModel: ["Pay", "Borc"],
+    shortDesc: "Aqro-texnologiya və su ehtiyatlarına yönəlmiş angel şəbəkəsi.",
+    trackRecord: ["IrrigaTech", "SoilSense"],
+  },
+  {
+    id: "i3",
+    name: "Eurasia Digital Partners",
+    capitalMinUSD: 500000,
+    capitalMaxUSD: 3000000,
+    sectors: ["İKT", "Xidmətlər"],
+    experienceYears: 6,
+    riskTolerance: "Yüksək",
+    cooperationModel: ["Pay"],
+    shortDesc: "B2B SaaS və platformalara yönəlmiş böyümə mərhələsi investoru.",
+    trackRecord: ["DocuBridge", "FleetOS"],
+  },
+];

@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+/* Custom CSS Variables */
+:root {
+  --primary-color: #9B823F;
+  --primary-rgb: 155, 130, 63;
+}
+
+/* Custom utility classes */
+.bg-primary-custom {
+  background-color: var(--primary-color);
+}
+
+.bg-primary {
+  background-color: var(--primary-color);
+}
+
+.text-primary-custom {
+  color: var(--primary-color);
+}
+
+.border-primary-custom {
+  border-color: var(--primary-color);
+}
+
+.hover\:bg-primary-custom:hover {
+  background-color: var(--primary-color);
+}
+
+.hover\:text-primary-custom:hover {
+  color: var(--primary-color);
+}
+
+/* Primary color with opacity variations */
+.bg-primary-custom-10 {
+  background-color: rgba(var(--primary-rgb), 0.1);
+}
+
+.bg-primary-custom-20 {
+  background-color: rgba(var(--primary-rgb), 0.2);
+}
+
+.bg-primary-custom-80 {
+  background-color: rgba(var(--primary-rgb), 0.8);
+}
+
+.bg-primary-custom-90 {
+  background-color: rgba(var(--primary-rgb), 0.9);
+}
