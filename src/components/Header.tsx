@@ -60,23 +60,23 @@ const Header = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
-         <Link
-         to={"/"}
-         className="flex items-center"
-         >
-         {/* Ana loqo - ağ arxa fonla */}
-         <div className="bg-white rounded-xl p-3 shadow-lg mr-3 border-2 border-white/20">
-           <img className="w-18 h-auto" src="https://smb.gov.az/img/logo-az.svg" alt="SMB Logo" />
-         </div>
-         
-         {/* Ehtiyat loqo - əgər yuxarıdakı işləməzsə */}
-         {/* <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/30">
+          <Link
+            to={"/"}
+            className="flex items-center"
+          >
+            {/* Ana loqo - ağ arxa fonla */}
+            <div className="bg-white rounded-xl p-3 shadow-lg mr-3 border-2 border-white/20">
+              <img className="w-18 h-auto" src="https://smb.gov.az/img/logo-az.svg" alt="SMB Logo" />
+            </div>
+
+            {/* Ehtiyat loqo - əgər yuxarıdakı işləməzsə */}
+            {/* <div className="flex items-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/30">
            <svg className="w-8 h-8 text-white mr-2" fill="currentColor" viewBox="0 0 24 24">
              <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
            </svg>
            <span className="text-white font-bold text-lg">SMB</span>
          </div> */}
-         </Link>
+          </Link>
           <span className="hidden sm:block text-xl md:text-2xl font-bold text-white drop-shadow-lg">
             KOB-İN MATCH PLATFORMASI
           </span>
@@ -135,8 +135,8 @@ const Header = () => {
 
                   {/* Menu Items */}
                   <div className="py-2">
-                    <Link 
-                      to="/profile" 
+                    <Link
+                      to="/profile"
                       className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
                       onClick={() => setDropdownOpen(false)}
                     >
@@ -145,8 +145,8 @@ const Header = () => {
                       </svg>
                       Profil
                     </Link>
-                    
-                    <button 
+
+                    <button
                       onClick={handleLogout}
                       className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
                     >
