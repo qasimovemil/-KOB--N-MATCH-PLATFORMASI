@@ -87,7 +87,7 @@ const Header = () => {
           <Link to="/" className="font-bold text-base md:text-lg text-white hover:text-white/80">Ana Səhifə</Link>
           <Link to="/kos" className="text-white font-medium hover:underline hover:text-white/80">KOS-lar</Link>
           <Link to="/investor" className="text-white font-medium hover:underline hover:text-white/80">İnvestorlar</Link>
-          <Link to="/match" className="text-white font-medium hover:underline hover:text-white/80">Match</Link>
+          <Link to="/match" className="text-white font-medium hover:underline hover:text-white/80">Uyğunlaşdırma</Link>
           <Link to="/documents" className="text-white/90 font-medium hover:underline hover:text-white">Sənədlər</Link>
           <Link to="/regional-risk" className="text-white/90 font-medium hover:underline hover:text-white">Risk Analizi</Link>
           <Link to="/admin" className="text-white/90 font-medium hover:underline hover:text-white">Admin</Link>

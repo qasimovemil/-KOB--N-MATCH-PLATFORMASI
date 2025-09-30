@@ -46,7 +46,7 @@ const Match = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <div className="w-full max-w-2xl bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-semibold text-center mb-6 text-primary">AI ilə Ən Yaxşı Match</h2>
+  <h2 className="text-2xl font-semibold text-center mb-6 text-primary">AI ilə Ən Yaxşı Uyğunlaşdırma</h2>
         <div className="mb-6">
           <div className="text-lg font-bold text-primary">Sizə ən uyğun Investor:</div>
           <div className="p-4 border rounded bg-gray-50 mb-2">
@@ -73,7 +73,7 @@ const Match = () => {
             className="flex-1 border rounded px-3 py-2 focus:outline-none focus:border-primary"
             value={input}
             onChange={e => setInput(e.target.value)}
-            placeholder="AI-ya sual verin..."
+            placeholder="AI-yə sual verin..."
           />
           <button type="submit" className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80 transition-colors">Göndər</button>
         </form>

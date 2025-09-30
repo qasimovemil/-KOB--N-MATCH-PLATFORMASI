@@ -50,9 +50,9 @@ const Footer = () => {
         </motion.div>
         <p className="text-sm opacity-80">&copy; {new Date().getFullYear()} Investor–KOS Platforması. Bütün hüquqlar Günay Həşimovaya məxsusdur.</p>
         <div className="flex flex-wrap justify-center items-center gap-2 mt-2">
-          <a href="/privacy-policy" className="text-xs text-gray-200 hover:text-white underline underline-offset-2 transition-colors duration-200">Privacy Policy</a>
+          <a href="/privacy-policy" className="text-xs text-gray-200 hover:text-white underline underline-offset-2 transition-colors duration-200">Məxfilik Siyasəti</a>
           <span className="text-xs text-gray-400">|</span>
-          <a href="/terms-of-service" className="text-xs text-gray-200 hover:text-white underline underline-offset-2 transition-colors duration-200">Terms of Service</a>
+          <a href="/terms-of-service" className="text-xs text-gray-200 hover:text-white underline underline-offset-2 transition-colors duration-200">Xidmət Şərtləri</a>
         </div>
       </div>
     </motion.footer>
