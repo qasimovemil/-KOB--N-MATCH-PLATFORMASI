@@ -10,8 +10,8 @@ const Home = () => {
     {
       title: "İnvestor • KOS",
       subtitle: "Matching Platforması",
-      description: "🚀 KOS-lar və investorlar arasında uyğunluq tapın",
-      description2: "💰 İnvestisiya fürsətləri yaradın",
+      description: "KOS-lar və investorlar arasında uyğunluq tapın",
+      description2: "İnvestisiya fürsətləri yaradın",
       image: "https://smb.gov.az/storage/3707/kobaner-(1).png",
       icon: (
         <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
@@ -24,8 +24,8 @@ const Home = () => {
     {
       title: "AI Əsaslı",
       subtitle: "Uyğunlaşdırma Sistemi",
-      description: "🤖 Süni intellekt ilə ən uyğun partnyoru tapın",
-      description2: "📊 Dəqiq analiz və tövsiyələr",
+      description: "Süni intellekt ilə ən uyğun partnyoru tapın",
+      description2: "Dəqiq analiz və tövsiyələr",
       image: "https://smb.gov.az/storage/2747/ESAS-VERİSYA-2-(1).jpg",
       icon: (
         <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
@@ -36,8 +36,8 @@ const Home = () => {
     {
       title: "Güvənli və",
       subtitle: "Sürətli Platform",
-      description: "🔒 Tam təhlükəsiz və məxfi məlumat mübadiləsi",
-      description2: "⚡ Sürətli və effektiv əlaqələndirmə",
+      description: "Tam təhlükəsiz və məxfi məlumat mübadiləsi",
+      description2: "Sürətli və effektiv əlaqələndirmə",
       image: "https://smb.gov.az/storage/6768/satis-sayt.png",
       icon: (
         <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
@@ -146,7 +146,7 @@ const Home = () => {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      <span className="mr-2 text-xl">🏢</span>
+                      <span className="mr-2 text-xl"></span>
                       KOS-lar üçün Başla
                       <svg className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
@@ -159,7 +159,7 @@ const Home = () => {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      <span className="mr-2 text-xl">💼</span>
+                      <span className="mr-2 text-xl"></span>
                       İnvestorlar üçün Başla
                       <svg className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />

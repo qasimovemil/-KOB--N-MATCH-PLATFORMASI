@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import AzerbaijanAdm1Map from '../components/AzerbaijanAdm1Map';
 
 interface RegionalData {
   region: string;
@@ -162,32 +163,44 @@ const RegionalRisk = () => {
           </div>
         </div>
 
+        {/* Ümumi metrik paneli kaldırıldı (xəritə odaklı idi) */}
+
         {view === 'overview' ? (
           /* Ümumi Baxış */
           <div className="grid lg:grid-cols-2 gap-8">
-            {/* Sol tərəf - Regional Map */}
+            {/* Sol tərəf - Xəritə + Regionlar Siyahısı */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-primary mb-6">🗺️ Risk Xəritəsi</h2>
-              <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-primary mb-4">🗺️ İnteraktiv Xəritə</h2>
+              <div className="mb-6">
+                <AzerbaijanAdm1Map
+                  selectedName={selectedRegion.region}
+                  onRegionClick={(name) => {
+                    const region = REGIONAL_DATA.find(r => r.region === name);
+                    if (region) setSelectedRegion(region);
+                  }}
+                />
+              </div>
+              <h3 className="text-lg font-semibold mb-3">📋 Regionlar Siyahısı</h3>
+              <div className="space-y-2">
                 {REGIONAL_DATA.map((region) => (
                   <motion.div
                     key={region.region}
-                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                    className={`p-3 rounded-lg border cursor-pointer transition-all ${
                       selectedRegion.region === region.region
                         ? 'border-primary bg-primary/5'
                         : 'border-gray-200 hover:border-primary/50'
                     }`}
                     onClick={() => setSelectedRegion(region)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
                   >
                     <div className="flex justify-between items-center">
                       <div>
-                        <h3 className="text-lg font-semibold">{region.region}</h3>
-                        <p className="text-sm text-gray-600">Əhali: {(region.population / 1000000).toFixed(1)}M</p>
+                        <h4 className="font-semibold">{region.region}</h4>
+                        <p className="text-xs text-gray-600">Əhali: {(region.population / 1000000).toFixed(1)}M</p>
                       </div>
                       <div className="text-right">
-                        <div className={`px-3 py-1 rounded-full text-sm font-medium ${getRiskColor(region.riskScore)}`}>
+                        <div className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(region.riskScore)}`}>
                           {region.riskScore}/100
                         </div>
                         <p className="text-xs text-gray-500 mt-1">{getRiskLevel(region.riskScore)}</p>
@@ -198,9 +211,12 @@ const RegionalRisk = () => {
               </div>
             </div>
 
-            {/* Sağ tərəf - Seçilmiş Region Məlumatları */}
+            {/* Sağ tərəf - Seçilmiş Region Təfərrüatlı Analizi */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-primary mb-6">{selectedRegion.region} Regionu</h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-primary">{selectedRegion.region} Regionu</h2>
+                <div className="text-sm text-gray-500">Soldakı siyahıdan region seçin</div>
+              </div>
               
               {/* Risk Score */}
               <div className="text-center mb-6">
@@ -272,7 +288,7 @@ const RegionalRisk = () => {
               </div>
 
               {/* Fürsətlər və Çağırışlar */}
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-2 gap-4 mb-6">
                 <div>
                   <h4 className="font-semibold mb-3 text-green-600">✅ Fürsətlər</h4>
                   <ul className="space-y-2">
@@ -294,6 +310,18 @@ const RegionalRisk = () => {
                       </li>
                     ))}
                   </ul>
+                </div>
+              </div>
+
+              {/* Seçim Təlimatı (xəritəsiz) */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-center space-x-2">
+                  <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  <p className="text-sm text-blue-800 font-medium">
+                    💡 Məsləhət: Soldakı region siyahısından birini seçərək ətraflı analizə baxa bilərsiniz
+                  </p>
                 </div>
               </div>
             </div>
