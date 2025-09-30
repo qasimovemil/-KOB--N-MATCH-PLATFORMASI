@@ -13,7 +13,7 @@ interface RiskInputs {
   borcKapitalNisbeti: NumOrEmpty;
   likvidlik: NumOrEmpty;
   rentabellik: NumOrEmpty;
-  
+
   // Qeyri-maliyyə göstəriciləri
   sirketYasi: NumOrEmpty;
   menecmentTecrubesi: NumOrEmpty;
@@ -127,37 +127,37 @@ const RiskCalculator: React.FC = () => {
     const borcKapital = toNum(inputs.borcKapitalNisbeti);
     const likvidlik = toNum(inputs.likvidlik);
     const rentabellik = toNum(inputs.rentabellik);
-    const maliyyeBali = Math.min(5, Math.max(1, 
-      (aktivler / 1_000_000 * 0.3) + 
-      (menfeet / 100_000 * 0.3) + 
+    const maliyyeBali = Math.min(5, Math.max(1,
+      (aktivler / 1_000_000 * 0.3) +
+      (menfeet / 100_000 * 0.3) +
       (Math.max(0, 5 - borcKapital) * 0.2) +
       (likvidlik * 0.1) +
       (rentabellik / 20 * 0.1)
     ));
 
     // İdarəetmə balı (şirkət yaşı 0–30, təcrübə 1–25 miqyaslarında normallaşdırılır)
-  const ageNorm = clamp01(toNum(inputs.sirketYasi) / 30);
-  const expNorm = clamp01(toNum(inputs.menecmentTecrubesi) / 25);
+    const ageNorm = clamp01(toNum(inputs.sirketYasi) / 30);
+    const expNorm = clamp01(toNum(inputs.menecmentTecrubesi) / 25);
     const idare0to1 = (ageNorm * 0.4) + (expNorm * 0.6);
     const idareBali = 1 + idare0to1 * 4; // 1–5
 
     // Bazar potensialı balı
     // sektorRiski: 1 (aşağı risk) → 5 (yüksək risk). 1 yaxşı, 5 pis → tərs çeviririk və 0–1 aralığına salırıq.
-  const sektorSkoru01 = clamp01((6 - toNum(inputs.sektorRiski)) / 5);
+    const sektorSkoru01 = clamp01((6 - toNum(inputs.sektorRiski)) / 5);
     // ixracPotensiali: manat ilə. 0–500k aralığında 0–1-ə xəritələyirik (üstü 1-ə sıxılır)
-  const ixracNorm = clamp01(toNum(inputs.ixracPotensiali) / 500_000);
+    const ixracNorm = clamp01(toNum(inputs.ixracPotensiali) / 500_000);
     const bazar0to1 = (sektorSkoru01 * 0.7) + (ixracNorm * 0.3);
     const bazarBali = 1 + bazar0to1 * 4; // 1–5
 
-  // İnnovasiya balı (manat ilə çəkilən xərclər) → 0–100k = 0–1
-  const innovNorm = clamp01(toNum(inputs.innovasiyaBalı) / 100_000);
-  const innovasiyaBaliNormalized = 1 + innovNorm * 4; // 1–5
+    // İnnovasiya balı (manat ilə çəkilən xərclər) → 0–100k = 0–1
+    const innovNorm = clamp01(toNum(inputs.innovasiyaBalı) / 100_000);
+    const innovasiyaBaliNormalized = 1 + innovNorm * 4; // 1–5
 
-  // ESG balı (1–5 arası)
-  const esgBaliNormalized = Math.min(5, Math.max(1, toNum(inputs.esgFaktorlari)));
+    // ESG balı (1–5 arası)
+    const esgBaliNormalized = Math.min(5, Math.max(1, toNum(inputs.esgFaktorlari)));
 
     // Çəkili ortalama hesablama
-    const weightedScore = 
+    const weightedScore =
       (maliyyeBali * weights.maliyye) +
       (idareBali * weights.idareEtme) +
       (bazarBali * weights.bazarPotensiali) +
@@ -407,9 +407,9 @@ const RiskCalculator: React.FC = () => {
           ) : (
             <div className="text-center text-gray-400">
               <svg className="w-32 h-32 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 4L9 7V9C9 10.1 9.9 11 11 11V16L7.5 15.5C6.7 15.3 6.2 14.6 6 13.8L4.4 8.2C4.1 7.1 4.7 6 5.8 5.7C6.9 5.4 8 6 8.3 7.1L9.5 11.5L11 11V9C11 7.9 11.9 7 13 7H15C16.1 7 17 7.9 17 9V11L18.5 11.5L19.7 7.1C20 6 21.1 5.4 22.2 5.7C23.3 6 23.9 7.1 23.6 8.2L22 13.8C21.8 14.6 21.3 15.3 20.5 15.5L17 16V11C17 9.9 16.1 9 15 9H21Z"/>
+                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 4L9 7V9C9 10.1 9.9 11 11 11V16L7.5 15.5C6.7 15.3 6.2 14.6 6 13.8L4.4 8.2C4.1 7.1 4.7 6 5.8 5.7C6.9 5.4 8 6 8.3 7.1L9.5 11.5L11 11V9C11 7.9 11.9 7 13 7H15C16.1 7 17 7.9 17 9V11L18.5 11.5L19.7 7.1C20 6 21.1 5.4 22.2 5.7C23.3 6 23.9 7.1 23.6 8.2L22 13.8C21.8 14.6 21.3 15.3 20.5 15.5L17 16V11C17 9.9 16.1 9 15 9H21Z" />
               </svg>
-              <p className="text-lg">Məlumatları daxil edib<br/>Risk Balını hesablayın</p>
+              <p className="text-lg">Məlumatları daxil edib<br />Risk Balını hesablayın</p>
             </div>
           )}
         </div>
