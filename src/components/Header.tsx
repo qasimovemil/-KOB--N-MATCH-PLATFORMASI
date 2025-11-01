@@ -52,7 +52,7 @@ const Header = () => {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, type: "spring" }}
     >
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="max-w-8xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <motion.div
           className="flex items-center gap-3"

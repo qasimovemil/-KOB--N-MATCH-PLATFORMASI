@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { FiMap, FiBarChart2, FiSearch, FiClipboard, FiCheckCircle, FiAlertTriangle, FiInfo, FiBriefcase } from 'react-icons/fi';
 import AzerbaijanAdm1Map from '../components/AzerbaijanAdm1Map';
+import BalanceWheel from '../components/BalanceWheel';
 
 interface RegionalData {
   region: string;
@@ -45,6 +47,38 @@ const REGIONAL_DATA: RegionalData[] = [
     keyIndustries: ['Neft və qaz', 'Maliyyə', 'İT', 'Turizm', 'Logistika']
   },
   {
+    region: 'Abşeron',
+    riskScore: 30,
+    population: 950000,
+    gdp: 28000,
+    businessCount: 7200,
+    infrastructure: 78,
+    education: 82,
+    stability: 82,
+    corruption: 28,
+    businessEase: 74,
+    factors: { economic: 78, political: 82, infrastructure: 78, social: 76, environmental: 65 },
+    opportunities: ['Bakıya yaxınlıq', 'Sürətli urbanizasiya', 'Logistika düyünləri'],
+    challenges: ['Torpaq və infrastruktur xərcləri', 'Ekoloji təzyiq'],
+    keyIndustries: ['Tikinti', 'Logistika', 'Ticarət', 'İT']
+  },
+  {
+    region: 'Aran',
+    riskScore: 52,
+    population: 1700000,
+    gdp: 22000,
+    businessCount: 6000,
+    infrastructure: 58,
+    education: 60,
+    stability: 78,
+    corruption: 32,
+    businessEase: 68,
+    factors: { economic: 62, political: 78, infrastructure: 58, social: 68, environmental: 70 },
+    opportunities: ['Kənd təsərrüfatı', 'Yüngül sənaye'],
+    challenges: ['Suvarma sistemləri', 'Kapital çıxışı məhdudluğu'],
+    keyIndustries: ['Kənd təsərrüfatı', 'Qida emalı', 'Tekstil']
+  },
+  {
     region: 'Gəncə-Qazax',
     riskScore: 35,
     population: 1800000,
@@ -77,6 +111,22 @@ const REGIONAL_DATA: RegionalData[] = [
     keyIndustries: ['Turizm', 'Kənd təsərrüfatı', 'Əl sənətləri', 'Ormançılıq']
   },
   {
+    region: 'Quba-Xaçmaz',
+    riskScore: 42,
+    population: 900000,
+    gdp: 16000,
+    businessCount: 4300,
+    infrastructure: 62,
+    education: 66,
+    stability: 84,
+    corruption: 26,
+    businessEase: 73,
+    factors: { economic: 60, political: 84, infrastructure: 62, social: 78, environmental: 80 },
+    opportunities: ['Meyvəçilik və emal', 'Dəniz turizmi', 'Rusiya bazarına çıxış'],
+    challenges: ['Mövsümi məşğulluq', 'Logistika optimizasiyası'],
+    keyIndustries: ['Kənd təsərrüfatı', 'Turizm', 'Qida sənayesi']
+  },
+  {
     region: 'Lənkəran',
     riskScore: 45,
     population: 900000,
@@ -93,6 +143,22 @@ const REGIONAL_DATA: RegionalData[] = [
     keyIndustries: ['Çay istehsalı', 'Kənd təsərrüfatı', 'Balıqçılıq', 'Turizm']
   },
   {
+    region: 'Naxçıvan',
+    riskScore: 38,
+    population: 460000,
+    gdp: 19000,
+    businessCount: 3000,
+    infrastructure: 72,
+    education: 75,
+    stability: 88,
+    corruption: 22,
+    businessEase: 78,
+    factors: { economic: 66, political: 88, infrastructure: 72, social: 76, environmental: 72 },
+    opportunities: ['Sərhəd ticarəti', 'Turizm', 'Kənd təsərrüfatı'],
+    challenges: ['İzolyasiya və logistika', 'Bazar həcmi məhdudluğu'],
+    keyIndustries: ['Qida sənayesi', 'Turizm', 'Kənd təsərrüfatı']
+  },
+  {
     region: 'Şirvan-Salyan',
     riskScore: 50,
     population: 800000,
@@ -107,6 +173,86 @@ const REGIONAL_DATA: RegionalData[] = [
     opportunities: ['Neft sənayesi', 'Kənd təsərrüfatı', 'Xəzər dənizi resursu'],
     challenges: ['Ekoloji problemlər', 'İnfrastruktur çatışmazlığı'],
     keyIndustries: ['Neft', 'Qaz', 'Kənd təsərrüfatı', 'Kimya sənayesi']
+  },
+  {
+    region: 'Dağlıq Şirvan',
+    riskScore: 47,
+    population: 500000,
+    gdp: 14000,
+    businessCount: 2600,
+    infrastructure: 57,
+    education: 62,
+    stability: 86,
+    corruption: 24,
+    businessEase: 70,
+    factors: { economic: 58, political: 86, infrastructure: 57, social: 72, environmental: 78 },
+    opportunities: ['Dağ turizmi', 'Ekoloji məhsullar'],
+    challenges: ['Nəqliyyat əlçatanlığı', 'Kiçik bazar'],
+    keyIndustries: ['Turizm', 'Kənd təsərrüfatı', 'Əl sənətləri']
+  },
+  {
+    region: 'Şərqi-Zəngəzur',
+    riskScore: 55,
+    population: 430000,
+    gdp: 12000,
+    businessCount: 1800,
+    infrastructure: 50,
+    education: 58,
+    stability: 75,
+    corruption: 28,
+    businessEase: 66,
+    factors: { economic: 58, political: 75, infrastructure: 50, social: 64, environmental: 82 },
+    opportunities: ['Bərpa və quruculuq', 'Mədənçilik', 'Turizm'],
+    challenges: ['İnfrastrukturun bərpası', 'İnsan resursları çatışmazlığı'],
+    keyIndustries: ['Tikinti', 'Mədənçilik', 'Kənd təsərrüfatı']
+  },
+  {
+    region: 'Mil-Muğan',
+    riskScore: 53,
+    population: 750000,
+    gdp: 17000,
+    businessCount: 3400,
+    infrastructure: 56,
+    education: 60,
+    stability: 82,
+    corruption: 29,
+    businessEase: 69,
+    factors: { economic: 60, political: 82, infrastructure: 56, social: 66, environmental: 72 },
+    opportunities: ['Pambıqçılıq və emal', 'İxrac potensialı'],
+    challenges: ['Su ehtiyatları', 'Modernizasiya ehtiyacı'],
+    keyIndustries: ['Kənd təsərrüfatı', 'Qida sənayesi']
+  },
+  {
+    region: 'Qarabağ',
+    riskScore: 57,
+    population: 600000,
+    gdp: 13000,
+    businessCount: 2100,
+    infrastructure: 48,
+    education: 59,
+    stability: 74,
+    corruption: 27,
+    businessEase: 65,
+    factors: { economic: 56, political: 74, infrastructure: 48, social: 62, environmental: 80 },
+    opportunities: ['Bərpa işləri', 'Aqrar inkişaf', 'Enerji layihələri'],
+    challenges: ['Miqrasiya və məskunlaşma', 'İnfrastruktur yatırımı'],
+    keyIndustries: ['Tikinti', 'Enerji', 'Kənd təsərrüfatı']
+  },
+  {
+    region: 'Mərkəzi-Aran',
+    riskScore: 51,
+    population: 880000,
+    gdp: 18000,
+    businessCount: 3600,
+    infrastructure: 59,
+    education: 61,
+    stability: 80,
+    corruption: 30,
+    businessEase: 70,
+    factors: { economic: 60, political: 80, infrastructure: 59, social: 66, environmental: 70 },
+    opportunities: ['Logistika mərkəzləri', 'Aqrar sənaye parkları'],
+    challenges: ['Kapitalın cəlbi', 'İnnovasiya sürəti'],
+    keyIndustries: ['Kənd təsərrüfatı', 'Logistika', 'Yüngül sənaye']
   }
 ];
 
@@ -133,7 +279,10 @@ const RegionalRisk = () => {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary mb-4">🗺️ Regional Risk Analizi</h1>
+          <h1 className="text-4xl font-bold text-primary mb-4 inline-flex items-center gap-2">
+            <FiMap className="w-8 h-8" />
+            Regional Risk Analizi
+          </h1>
           <p className="text-xl text-gray-600">Azərbaycanın regionları üzrə investisiya riskləri və fürsətləri</p>
         </div>
 
@@ -148,7 +297,10 @@ const RegionalRisk = () => {
                   : 'text-gray-600 hover:text-primary'
               }`}
             >
-              📊 Ümumi Baxış
+              <span className="inline-flex items-center gap-2">
+                <FiBarChart2 className="w-5 h-5" />
+                Ümumi Baxış
+              </span>
             </button>
             <button
               onClick={() => setView('detailed')}
@@ -158,7 +310,10 @@ const RegionalRisk = () => {
                   : 'text-gray-600 hover:text-primary'
               }`}
             >
-              🔍 Ətraflı Analiz
+              <span className="inline-flex items-center gap-2">
+                <FiSearch className="w-5 h-5" />
+                Ətraflı Analiz
+              </span>
             </button>
           </div>
         </div>
@@ -170,7 +325,10 @@ const RegionalRisk = () => {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Sol tərəf - Xəritə + Regionlar Siyahısı */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-primary mb-4">🗺️ İnteraktiv Xəritə</h2>
+              <h2 className="text-2xl font-bold text-primary mb-4 inline-flex items-center gap-2">
+                <FiMap className="w-6 h-6" />
+                İnteraktiv Xəritə
+              </h2>
               <div className="mb-6">
                 <AzerbaijanAdm1Map
                   selectedName={selectedRegion.region}
@@ -180,7 +338,10 @@ const RegionalRisk = () => {
                   }}
                 />
               </div>
-              <h3 className="text-lg font-semibold mb-3">📋 Regionlar Siyahısı</h3>
+              <h3 className="text-lg font-semibold mb-3 inline-flex items-center gap-2">
+                <FiClipboard className="w-5 h-5" />
+                Regionlar Siyahısı
+              </h3>
               <div className="space-y-2">
                 {REGIONAL_DATA.map((region) => (
                   <motion.div
@@ -277,7 +438,10 @@ const RegionalRisk = () => {
 
               {/* Əsas Sənaye Sahələri */}
               <div className="mb-6">
-                <h4 className="font-semibold mb-3">🏭 Əsas Sənaye Sahələri</h4>
+                <h4 className="font-semibold mb-3 inline-flex items-center gap-2">
+                  <FiBriefcase className="w-5 h-5" />
+                  Əsas Sənaye Sahələri
+                </h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedRegion.keyIndustries.map((industry, index) => (
                     <span key={index} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
@@ -290,22 +454,28 @@ const RegionalRisk = () => {
               {/* Fürsətlər və Çağırışlar */}
               <div className="grid md:grid-cols-2 gap-4 mb-6">
                 <div>
-                  <h4 className="font-semibold mb-3 text-green-600">✅ Fürsətlər</h4>
+                  <h4 className="font-semibold mb-3 text-green-600 inline-flex items-center gap-2">
+                    <FiCheckCircle className="w-5 h-5" />
+                    Fürsətlər
+                  </h4>
                   <ul className="space-y-2">
                     {selectedRegion.opportunities.slice(0, 3).map((opp, index) => (
                       <li key={index} className="text-sm text-gray-600 flex items-start">
-                        <span className="text-green-500 mr-2">•</span>
+                        <FiCheckCircle className="text-green-500 mr-2 mt-0.5" />
                         {opp}
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-3 text-red-600">⚠️ Çağırışlar</h4>
+                  <h4 className="font-semibold mb-3 text-red-600 inline-flex items-center gap-2">
+                    <FiAlertTriangle className="w-5 h-5" />
+                    Çağırışlar
+                  </h4>
                   <ul className="space-y-2">
                     {selectedRegion.challenges.slice(0, 3).map((challenge, index) => (
                       <li key={index} className="text-sm text-gray-600 flex items-start">
-                        <span className="text-red-500 mr-2">•</span>
+                        <FiAlertTriangle className="text-red-500 mr-2 mt-0.5" />
                         {challenge}
                       </li>
                     ))}
@@ -315,12 +485,10 @@ const RegionalRisk = () => {
 
               {/* Seçim Təlimatı (xəritəsiz) */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-center space-x-2">
-                  <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
+                <div className="flex items-center gap-2">
+                  <FiInfo className="w-5 h-5 text-blue-600" />
                   <p className="text-sm text-blue-800 font-medium">
-                    💡 Məsləhət: Soldakı region siyahısından birini seçərək ətraflı analizə baxa bilərsiniz
+                    Məsləhət: Soldakı region siyahısından birini seçərək ətraflı analizə baxa bilərsiniz
                   </p>
                 </div>
               </div>
@@ -350,42 +518,49 @@ const RegionalRisk = () => {
               </div>
             </div>
 
-            {/* Risk Faktorları Analizi */}
+            {/* Risk Faktorları Analizi - Balance Wheel */}
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-2xl font-bold text-primary mb-6">{selectedRegion.region} - Risk Faktorları</h2>
-              <div className="space-y-6">
-                {Object.entries(selectedRegion.factors).map(([factor, score]) => {
-                  const factorNames = {
-                    economic: 'İqtisadi Risk',
-                    political: 'Siyasi Sabitlik',
-                    infrastructure: 'İnfrastruktur',
-                    social: 'Sosial Faktorlar',
-                    environmental: 'Ekoloji Risk'
-                  };
-                  
-                  return (
-                    <div key={factor}>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="font-medium">{factorNames[factor as keyof typeof factorNames]}</span>
-                        <span className="font-bold text-primary">{score}/100</span>
+              <div className="grid lg:grid-cols-2 gap-8 items-center">
+                <div className="max-w-[420px] mx-auto">
+                  <BalanceWheel factors={selectedRegion.factors} size={380} />
+                </div>
+                <div className="space-y-4">
+                  {Object.entries(selectedRegion.factors).map(([factor, score]) => {
+                    const factorNames = {
+                      economic: 'İqtisadi',
+                      political: 'Siyasi',
+                      infrastructure: 'İnfrastruktur',
+                      social: 'Sosial',
+                      environmental: 'Ekoloji'
+                    };
+                    return (
+                      <div key={factor}>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-medium text-gray-700">{factorNames[factor as keyof typeof factorNames]}</span>
+                          <span className="font-bold text-primary">{score}/100</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                          <motion.div
+                            className="bg-primary h-2.5 rounded-full"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${score}%` }}
+                            transition={{ duration: 0.8 }}
+                          />
+                        </div>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-3">
-                        <motion.div
-                          className="bg-gradient-to-r from-primary to-primary/70 h-3 rounded-full"
-                          initial={{ width: 0 }}
-                          animate={{ width: `${score}%` }}
-                          transition={{ duration: 1, delay: 0.2 }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
             {/* Müqayisəli Analiz */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-primary mb-6">📊 Regionlar Müqayisəsi</h2>
+              <h2 className="text-2xl font-bold text-primary mb-6 inline-flex items-center gap-2">
+                <FiBarChart2 className="w-6 h-6" />
+                Regionlar Müqayisəsi
+              </h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>

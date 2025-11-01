@@ -80,19 +80,50 @@ function pathFromPolygon(poly: Polygon, scaleX: number, scaleY: number, minX: nu
 }
 
 // Highcharts özelliklerinde iqtisadi bölge ismi mevcut: properties.region
+// Bu xəritələndirmə 14 iqtisadi regiona uyğun lokal adları qaytarır
 const ECONOMIC_REGION_TO_CLUSTER: Record<string, string> = {
-  'Absheron Economic Region': 'Bakı',
+  // Abşeron klasteri (Bakı bu regionun tərkibində göstərilir)
+  'Absheron Economic Region': 'Abşeron',
+
+  // Aralıq regionlar (köhnə "Aran" bir neçə yeni regiona bölünüb) — tam dəqiqlik üçün əlavə xəritələndirmə tələb edə bilər
+  'Aran Economic Region': 'Mərkəzi-Aran',
+
+  // Quba-Xaçmaz
+  'Guba-Khachmaz Economic Region': 'Quba-Xaçmaz',
+
+  // Gəncə-Qazax
   'Ganja-Gazakh Economic Region': 'Gəncə-Qazax',
+
+  // Şəki-Zaqatala
   'Shaki-Zaqatala Economic Region': 'Şəki-Zaqatala',
+
+  // Lənkəran
   'Lankaran Economic Region': 'Lənkəran',
-  'Aran Economic Region': 'Şirvan-Salyan',
+
+  // Dağlıq Şirvan
+  'Daghlig Shirvan Economic Region': 'Dağlıq Şirvan',
+
+  // Qarabağ (Highcharts datasetində "Yukhari Garabakh Economic Region" kimi keçir)
+  'Yukhari Garabakh Economic Region': 'Qarabağ',
+
+  // Şərqi-Zəngəzur (köhnə "Kalbajar-Lachin Economic Region")
+  'Kalbajar-Lachin Economic Region': 'Şərqi-Zəngəzur',
+
+  // Naxçıvan
+  'Naxçıvan Autonomous Republic': 'Naxçıvan',
+};
+
+// Bəzi rayonlar üçün region xəritələndirməsi istisna tələb edir (dataset köhnə bölgü adlarından istifadə edir)
+const DISTRICT_TO_CLUSTER: Record<string, string> = {
+  'Cəbrayıl': 'Şərqi-Zəngəzur',
+  'Bakı': 'Bakı',
 };
 
 function clusterFromProps(props: { [key: string]: unknown }): string | undefined {
+  const name = (props.name as string | undefined) ?? '';
+  if (name && DISTRICT_TO_CLUSTER[name]) return DISTRICT_TO_CLUSTER[name];
   const region = (props.region as string | undefined) ?? '';
   if (region && ECONOMIC_REGION_TO_CLUSTER[region]) return ECONOMIC_REGION_TO_CLUSTER[region];
-  // Başqa iqtisadi regionlar (məsələn Kalbajar-Lachin, Karabakh, Naxçıvan və s.)
-  // hal-hazırda analiz klasterlərinə daxil deyil → undefined qaytarırıq.
   return undefined;
 }
 

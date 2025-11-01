@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import RiskCalculator from "../components/RiskCalculator";
 import RiskScore from "../components/RiskScore";
 import InvestmentAttractivenessCalculator from "../components/InvestmentAttractivenessCalculator";
+import { FiClipboard, FiTarget, FiTrendingUp } from "react-icons/fi";
 
 const DEMO_KOS = {
   id: "kos-demo",
@@ -71,7 +72,10 @@ const KOS = () => {
                   : 'bg-white text-primary border border-primary hover:bg-primary/10'
               }`}
             >
-              📋 KOS Siyahısı
+              <span className="inline-flex items-center gap-2">
+                <FiClipboard className="w-5 h-5" />
+                KOS Siyahısı
+              </span>
             </button>
             <button
               onClick={() => setActiveTab('calculator')}
@@ -81,7 +85,10 @@ const KOS = () => {
                   : 'bg-white text-primary border border-primary hover:bg-primary/10'
               }`}
             >
-              🎯 Risk Hesablaıcısı
+              <span className="inline-flex items-center gap-2">
+                <FiTarget className="w-5 h-5" />
+                Risk Hesablayıcısı
+              </span>
             </button>
             <button
               onClick={() => setActiveTab('investment')}
@@ -91,7 +98,10 @@ const KOS = () => {
                   : 'bg-white text-primary border border-primary hover:bg-primary/10'
               }`}
             >
-              📈 İnvestisiya İndeksi
+              <span className="inline-flex items-center gap-2">
+                <FiTrendingUp className="w-5 h-5" />
+                İnvestisiya İndeksi
+              </span>
             </button>
           </div>
 

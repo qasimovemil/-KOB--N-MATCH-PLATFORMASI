@@ -1,33 +1,33 @@
 // src/pages/Login.tsx
 
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"KOS" | "Investor" | "">(""); // Yeni state əlavə etdik
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Bütün istifadəçiləri localStorage-dan götür
-    type User = { email: string; password: string; role: "KOS" | "Investor" };
-    let users: User[] = [];
-    try {
-      users = JSON.parse(localStorage.getItem("users") || "[]");
-    } catch {
-      users = [];
-    }
-    // Email və şifrəni yoxla
-    const found = users.find((u) => u.email === email && u.password === password && u.role === role);
-    if (found) {
-      localStorage.setItem("user", JSON.stringify(found));
-      navigate("/profile");
-    } else {
-      alert("Yanlış istifadəçi adı, şifrə və ya rol!");
-    }
-  };
+  // const handleLogin = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   // Bütün istifadəçiləri localStorage-dan götür
+  //   type User = { email: string; password: string; role: "KOS" | "Investor" };
+  //   let users: User[] = [];
+  //   try {
+  //     users = JSON.parse(localStorage.getItem("users") || "[]");
+  //   } catch {
+  //     users = [];
+  //   }
+  //   // Email və şifrəni yoxla
+  //   const found = users.find((u) => u.email === email && u.password === password && u.role === role);
+  //   if (found) {
+  //     localStorage.setItem("user", JSON.stringify(found));
+  //     navigate("/profile");
+  //   } else {
+  //     alert("Yanlış istifadəçi adı, şifrə və ya rol!");
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center relative" style={{ background: 'linear-gradient(135deg, rgba(155, 130, 63, 0.2) 0%, rgba(155, 130, 63, 0.05) 100%)' }}>
@@ -41,7 +41,9 @@ const Login = () => {
           <h2 className="text-3xl font-bold text-primary-custom">Giriş</h2>
           <p className="text-gray-600 mt-2">Hesabınıza daxil olun</p>
         </div>
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form 
+        // onSubmit={handleLogin} 
+        className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-bold text-primary-custom mb-2">
               📧 E-mail

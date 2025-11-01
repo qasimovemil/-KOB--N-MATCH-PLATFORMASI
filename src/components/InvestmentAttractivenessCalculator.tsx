@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { FiTrendingUp, FiDollarSign, FiUsers, FiBarChart2, FiZap, FiTarget, FiPieChart, FiCheckCircle } from 'react-icons/fi';
 
 type NumOrEmpty = number | '';
 
@@ -195,7 +196,10 @@ const InvestmentAttractivenessCalculator = () => {
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded-xl shadow-lg">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-primary mb-2">📈 İnvestisiya Cəlbedicilik İndeksi</h2>
+        <h2 className="text-3xl font-bold text-primary mb-2 inline-flex items-center gap-2">
+          <FiTrendingUp className="w-7 h-7" />
+          İnvestisiya Cəlbedicilik İndeksi
+        </h2>
         <p className="text-gray-600">Şirkətinizin investisiya cəlbediciliyini qiymətləndirin</p>
       </div>
 
@@ -204,7 +208,10 @@ const InvestmentAttractivenessCalculator = () => {
         <div className="lg:col-span-2 space-y-8">
           {/* Maliyyə Göstəriciləri */}
           <div className="bg-blue-50 p-6 rounded-lg">
-            <h3 className="text-xl font-semibold text-blue-800 mb-4">💰 Maliyyə Göstəriciləri (40%)</h3>
+            <h3 className="text-xl font-semibold text-blue-800 mb-4 inline-flex items-center gap-2">
+              <FiDollarSign className="w-5 h-5" />
+              Maliyyə Göstəriciləri (40%)
+            </h3>
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Gəlir (Manat)</label>
@@ -260,7 +267,10 @@ const InvestmentAttractivenessCalculator = () => {
 
           {/* İdarəetmə Keyfiyyəti */}
           <div className="bg-green-50 p-6 rounded-lg">
-            <h3 className="text-xl font-semibold text-green-800 mb-4">🏛️ İdarəetmə Keyfiyyəti (20%)</h3>
+            <h3 className="text-xl font-semibold text-green-800 mb-4 inline-flex items-center gap-2">
+              <FiUsers className="w-5 h-5" />
+              İdarəetmə Keyfiyyəti (20%)
+            </h3>
             <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Menecmentin Təcrübəsi (illə)</label>
@@ -276,7 +286,10 @@ const InvestmentAttractivenessCalculator = () => {
 
           {/* Bazar Potensialı */}
           <div className="bg-purple-50 p-6 rounded-lg">
-            <h3 className="text-xl font-semibold text-purple-800 mb-4">📊 Bazar Potensialı (20%)</h3>
+            <h3 className="text-xl font-semibold text-purple-800 mb-4 inline-flex items-center gap-2">
+              <FiBarChart2 className="w-5 h-5" />
+              Bazar Potensialı (20%)
+            </h3>
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Bazar Həcmi (Manat)</label>
@@ -312,7 +325,10 @@ const InvestmentAttractivenessCalculator = () => {
           {/* İnnovasiya və ESG */}
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-orange-50 p-6 rounded-lg">
-              <h3 className="text-lg font-semibold text-orange-800 mb-4">🔬 İnnovasiya (10%)</h3>
+              <h3 className="text-lg font-semibold text-orange-800 mb-4 inline-flex items-center gap-2">
+                <FiZap className="w-5 h-5" />
+                İnnovasiya (10%)
+              </h3>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">R&D İnvestisiyası (%)</label>
@@ -353,9 +369,10 @@ const InvestmentAttractivenessCalculator = () => {
 
           <button
             onClick={calculateScore}
-            className="w-full bg-primary text-white py-4 rounded-lg font-bold text-xl hover:bg-primary/90 transition-colors"
+            className="w-full bg-primary text-white py-4 rounded-lg font-bold text-xl hover:bg-primary/90 transition-colors inline-flex items-center justify-center gap-2"
           >
-            🎯 İnvestisiya Cəlbediciliyini Hesabla
+            <FiTarget className="w-6 h-6" />
+            İnvestisiya Cəlbediciliyini Hesabla
           </button>
         </div>
 
@@ -417,8 +434,8 @@ const InvestmentAttractivenessCalculator = () => {
                 <h4 className="text-lg font-semibold mb-4">Tövsiyələr</h4>
                 <ul className="space-y-2">
                   {result.recommendations.map((rec, index) => (
-                    <li key={index} className="flex items-start space-x-2">
-                      <span className="text-primary mt-1">•</span>
+                    <li key={index} className="flex items-start gap-2">
+                      <FiCheckCircle className="text-primary mt-0.5" />
                       <span className="text-gray-600">{rec}</span>
                     </li>
                   ))}
@@ -428,9 +445,7 @@ const InvestmentAttractivenessCalculator = () => {
           ) : (
             <div className="flex items-center justify-center h-full">
               <div className="text-center text-gray-400">
-                <svg className="w-24 h-24 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17 12C17 14.76 14.76 17 12 17S7 14.76 7 12 9.24 7 12 7 17 9.24 17 12ZM12 9C10.34 9 9 10.34 9 12S10.34 15 12 15 15 13.66 15 12 13.66 9 12 9Z" />
-                </svg>
+                <FiPieChart className="w-24 h-24 mx-auto mb-4 opacity-50" />
                 <p className="text-lg">Məlumatları daxil edib<br />İndeksi hesablayın</p>
               </div>
             </div>

@@ -2,6 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import {
+  FiGrid,
+  FiUsers,
+  FiBriefcase,
+  FiDollarSign,
+  FiLink,
+  FiMapPin,
+  FiBarChart2,
+  FiTrendingUp,
+  FiFileText,
+  FiUserPlus
+} from 'react-icons/fi';
 
 interface DashboardStats {
   totalUsers: number;
@@ -118,14 +130,20 @@ const AdminDashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const getActivityIcon = (type: RecentActivity['type']) => {
+  const getActivityIcon = (type: RecentActivity["type"]) => {
     switch (type) {
-      case 'registration': return '👤';
-      case 'match': return '🤝';
-      case 'document': return '📄';
-      case 'investment': return '💰';
-      case 'risk_assessment': return '📊';
-      default: return '📝';
+      case 'registration':
+        return <FiUserPlus className="w-4 h-4" />;
+      case 'match':
+        return <FiLink className="w-4 h-4" />;
+      case 'document':
+        return <FiFileText className="w-4 h-4" />;
+      case 'investment':
+        return <FiDollarSign className="w-4 h-4" />;
+      case 'risk_assessment':
+        return <FiBarChart2 className="w-4 h-4" />;
+      default:
+        return <FiFileText className="w-4 h-4" />;
     }
   };
 
@@ -158,7 +176,10 @@ const AdminDashboard = () => {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-primary mb-2">🏛️ Admin Dashboard</h1>
+          <h1 className="text-4xl font-bold text-primary mb-2 inline-flex items-center gap-2">
+            <FiGrid className="w-8 h-8" />
+            Admin Dashboard
+          </h1>
           <p className="text-gray-600">Platform statistikaları və fəaliyyət monitorinqi</p>
         </div>
 
@@ -198,7 +219,7 @@ const AdminDashboard = () => {
                 <p className="text-sm text-green-600">+{stats.newUsersToday} bu gün</p>
               </div>
               <div className="bg-blue-100 p-3 rounded-full">
-                <span className="text-2xl">👥</span>
+                <FiUsers className="w-6 h-6 text-blue-600" />
               </div>
             </div>
           </motion.div>
@@ -216,7 +237,7 @@ const AdminDashboard = () => {
                 <p className="text-sm text-blue-600">Aktiv şirkətlər</p>
               </div>
               <div className="bg-green-100 p-3 rounded-full">
-                <span className="text-2xl">🏢</span>
+                <FiBriefcase className="w-6 h-6 text-green-600" />
               </div>
             </div>
           </motion.div>
@@ -234,7 +255,7 @@ const AdminDashboard = () => {
                 <p className="text-sm text-purple-600">Qeydiyyatlı</p>
               </div>
               <div className="bg-purple-100 p-3 rounded-full">
-                <span className="text-2xl">💰</span>
+                <FiDollarSign className="w-6 h-6 text-purple-600" />
               </div>
             </div>
           </motion.div>
@@ -252,7 +273,7 @@ const AdminDashboard = () => {
                 <p className="text-sm text-orange-600">Davam edən</p>
               </div>
               <div className="bg-orange-100 p-3 rounded-full">
-                <span className="text-2xl">🤝</span>
+                <FiLink className="w-6 h-6 text-orange-600" />
               </div>
             </div>
           </motion.div>
@@ -290,7 +311,10 @@ const AdminDashboard = () => {
         <div className="grid lg:grid-cols-3 gap-8 mb-8">
           {/* Regional Statistics */}
           <div className="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-primary mb-6">📍 Regional Statistika</h2>
+            <h2 className="text-2xl font-bold text-primary mb-6 inline-flex items-center gap-2">
+              <FiMapPin className="w-6 h-6" />
+              Regional Statistika
+            </h2>
             <div className="space-y-4">
               {regionStats.map((region, index) => (
                 <motion.div
@@ -335,7 +359,10 @@ const AdminDashboard = () => {
 
           {/* Recent Activity */}
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-primary mb-6">📊 Son Fəaliyyətlər</h2>
+            <h2 className="text-2xl font-bold text-primary mb-6 inline-flex items-center gap-2">
+              <FiBarChart2 className="w-6 h-6" />
+              Son Fəaliyyətlər
+            </h2>
             <div className="space-y-4 max-h-96 overflow-y-auto">
               {recentActivity.map((activity, index) => (
                 <motion.div
@@ -368,7 +395,10 @@ const AdminDashboard = () => {
 
         {/* Performance Metrics */}
         <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-primary mb-6">📈 Performans Göstəriciləri</h2>
+          <h2 className="text-2xl font-bold text-primary mb-6 inline-flex items-center gap-2">
+            <FiTrendingUp className="w-6 h-6" />
+            Performans Göstəriciləri
+          </h2>
           <div className="grid md:grid-cols-4 gap-6">
             <div className="text-center">
               <div className="text-4xl font-bold text-green-600 mb-2">

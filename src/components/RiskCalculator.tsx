@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import RiskScore from './RiskScore';
+import { FiDollarSign, FiBarChart2, FiTarget, FiSliders } from 'react-icons/fi';
 
 type NumOrEmpty = number | '';
 
@@ -191,7 +192,10 @@ const RiskCalculator: React.FC = () => {
         <div className="space-y-6">
           {/* Maliyyə Göstəriciləri */}
           <div className="bg-primary/5 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-primary mb-4">💰 Maliyyə Göstəriciləri</h3>
+            <h3 className="text-lg font-semibold text-primary mb-4 inline-flex items-center gap-2">
+              <FiDollarSign className="w-5 h-5" />
+              Maliyyə Göstəriciləri
+            </h3>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -266,7 +270,10 @@ const RiskCalculator: React.FC = () => {
 
           {/* Qeyri-maliyyə Göstəriciləri */}
           <div className="bg-primary/5 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-primary mb-4">📊 Şirkət Məlumatları</h3>
+            <h3 className="text-lg font-semibold text-primary mb-4 inline-flex items-center gap-2">
+              <FiBarChart2 className="w-5 h-5" />
+              Şirkət Məlumatları
+            </h3>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -356,9 +363,10 @@ const RiskCalculator: React.FC = () => {
 
           <button
             onClick={handleCalculate}
-            className="w-full bg-primary text-white py-3 rounded-lg font-bold text-lg hover:bg-primary/90 transition-colors"
+            className="w-full bg-primary text-white py-3 rounded-lg font-bold text-lg hover:bg-primary/90 transition-colors inline-flex items-center justify-center gap-2"
           >
-            🎯 Risk Balını Hesabla
+            <FiTarget className="w-5 h-5" />
+            Risk Balını Hesabla
           </button>
 
         </div>
@@ -406,9 +414,7 @@ const RiskCalculator: React.FC = () => {
             </motion.div>
           ) : (
             <div className="text-center text-gray-400">
-              <svg className="w-32 h-32 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 4L9 7V9C9 10.1 9.9 11 11 11V16L7.5 15.5C6.7 15.3 6.2 14.6 6 13.8L4.4 8.2C4.1 7.1 4.7 6 5.8 5.7C6.9 5.4 8 6 8.3 7.1L9.5 11.5L11 11V9C11 7.9 11.9 7 13 7H15C16.1 7 17 7.9 17 9V11L18.5 11.5L19.7 7.1C20 6 21.1 5.4 22.2 5.7C23.3 6 23.9 7.1 23.6 8.2L22 13.8C21.8 14.6 21.3 15.3 20.5 15.5L17 16V11C17 9.9 16.1 9 15 9H21Z" />
-              </svg>
+              <FiSliders className="w-32 h-32 mx-auto mb-4 opacity-50" />
               <p className="text-lg">Məlumatları daxil edib<br />Risk Balını hesablayın</p>
             </div>
           )}

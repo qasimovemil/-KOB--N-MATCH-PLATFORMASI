@@ -2,6 +2,21 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import {
+  FiBook,
+  FiSearch,
+  FiFolder,
+  FiAward,
+  FiPercent,
+  FiClipboard,
+  FiFileText,
+  FiBarChart2,
+  FiTool,
+  FiFile,
+  FiLink,
+  FiPhone,
+  FiMail
+} from 'react-icons/fi';
 
 interface Document {
   id: string;
@@ -90,14 +105,35 @@ const InvestmentDocuments = () => {
   ];
 
   const categories = [
-    { id: 'all', name: 'Hamısı', icon: '📂' },
-    { id: 'dövlət-dəstəyi', name: 'Dövlət Dəstəyi', icon: '🏛️' },
-    { id: 'vergi-güzəştləri', name: 'Vergi Güzəştləri', icon: '💰' },
-    { id: 'icazələr', name: 'İcazələr', icon: '📋' },
-    { id: 'şablonlar', name: 'Şablonlar', icon: '📄' },
-    { id: 'risk-analizi', name: 'Risk Analizi', icon: '📊' },
-    { id: 'xidmətlər', name: 'Xidmətlər', icon: '🛠️' }
+    { id: 'all', name: 'Hamısı' },
+    { id: 'dövlət-dəstəyi', name: 'Dövlət Dəstəyi' },
+    { id: 'vergi-güzəştləri', name: 'Vergi Güzəştləri' },
+    { id: 'icazələr', name: 'İcazələr' },
+    { id: 'şablonlar', name: 'Şablonlar' },
+    { id: 'risk-analizi', name: 'Risk Analizi' },
+    { id: 'xidmətlər', name: 'Xidmətlər' }
   ];
+
+  const getCategoryIcon = (id: string) => {
+    switch (id) {
+      case 'all':
+        return <FiFolder className="w-5 h-5" />;
+      case 'dövlət-dəstəyi':
+        return <FiAward className="w-5 h-5" />;
+      case 'vergi-güzəştləri':
+        return <FiPercent className="w-5 h-5" />;
+      case 'icazələr':
+        return <FiClipboard className="w-5 h-5" />;
+      case 'şablonlar':
+        return <FiFileText className="w-5 h-5" />;
+      case 'risk-analizi':
+        return <FiBarChart2 className="w-5 h-5" />;
+      case 'xidmətlər':
+        return <FiTool className="w-5 h-5" />;
+      default:
+        return <FiFolder className="w-5 h-5" />;
+    }
+  };
 
   const filteredDocuments = documents.filter(doc => {
     const matchesCategory = selectedCategory === 'all' || doc.category === selectedCategory;
@@ -109,11 +145,16 @@ const InvestmentDocuments = () => {
 
   const getFileIcon = (type: string) => {
     switch (type) {
-      case 'pdf': return '📄';
-      case 'doc': return '📝';
-      case 'excel': return '📊';
-      case 'link': return '🔗';
-      default: return '📁';
+      case 'pdf':
+        return <FiFileText className="w-8 h-8 text-primary" />;
+      case 'doc':
+        return <FiFileText className="w-8 h-8 text-primary" />;
+      case 'excel':
+        return <FiBarChart2 className="w-8 h-8 text-primary" />;
+      case 'link':
+        return <FiLink className="w-8 h-8 text-primary" />;
+      default:
+        return <FiFile className="w-8 h-8 text-primary" />;
     }
   };
 
@@ -133,7 +174,10 @@ const InvestmentDocuments = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl font-bold text-primary mb-4">📚 İnvestisiya Sənədləri</h1>
+          <h1 className="text-4xl font-bold text-primary mb-4 inline-flex items-center gap-2">
+            <FiBook className="w-8 h-8" />
+            İnvestisiya Sənədləri
+          </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Dövlət dəstəkləri, vergi güzəştləri, icazələr və investisiya prosesi üçün lazım olan bütün sənədlər
           </p>
@@ -155,9 +199,7 @@ const InvestmentDocuments = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full px-6 py-4 text-lg border-2 border-primary/20 rounded-full focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
               />
-              <svg className="absolute right-6 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+              <FiSearch className="absolute right-6 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
             </div>
           </div>
         </motion.div>
@@ -180,8 +222,10 @@ const InvestmentDocuments = () => {
                     : 'bg-white text-gray-700 hover:bg-primary/10 border border-gray-200'
                 }`}
               >
-                <span className="mr-2">{category.icon}</span>
-                {category.name}
+                <span className="inline-flex items-center gap-2">
+                  {getCategoryIcon(category.id)}
+                  {category.name}
+                </span>
               </button>
             ))}
           </div>
@@ -288,14 +332,14 @@ const InvestmentDocuments = () => {
               href="tel:+994012123456"
               className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
             >
-              <span className="mr-2">📞</span>
+              <FiPhone className="mr-2" />
               Dəstək Xətti
             </a>
             <a
               href="mailto:support@platform.gov.az"
               className="inline-flex items-center px-6 py-3 bg-white text-primary border border-primary rounded-lg hover:bg-primary/10 transition-colors"
             >
-              <span className="mr-2">✉️</span>
+              <FiMail className="mr-2" />
               E-mail Dəstəyi
             </a>
           </div>
