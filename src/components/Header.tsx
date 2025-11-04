@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 const Header = () => {
   const [user, setUser] = useState<{ name?: string; email: string; role: string } | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [kosOpen, setKosOpen] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     const stored = localStorage.getItem("user");
@@ -83,9 +84,26 @@ const Header = () => {
         </motion.div>
 
         {/* Navigation */}
-        <nav className="flex gap-2 md:gap-4 items-center">
-          <Link to="/" className="font-bold text-base md:text-lg text-white hover:text-white/80">Ana Səhifə</Link>
-          <Link to="/kos" className="text-white font-medium hover:underline hover:text-white/80">KOS-lar</Link>
+  <nav className="flex gap-2 md:gap-4 items-center">
+          {/* <Link to="/" className="font-bold text-base md:text-lg text-white hover:text-white/80">Ana Səhifə</Link> */}
+          <div
+            className="relative"
+            onMouseEnter={() => setKosOpen(true)}
+            onMouseLeave={() => setKosOpen(false)}
+          >
+            <Link to="/kos" className="text-white font-medium hover:underline hover:text-white/80">
+              KOS-lar
+            </Link>
+            {/* Hover dropdown (no gap, anchored to bottom of trigger) */}
+            <div
+              className={`${kosOpen ? 'visible opacity-100' : 'invisible opacity-0'} transition-opacity duration-150 absolute left-0 top-full w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50`}
+            >
+              <Link to="/kos" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">KOS Siyahısı</Link>
+              <Link to="/kos/risk-calculator" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">Risk Hesablayıcısı</Link>
+              <Link to="/kos/investment-index" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">İnvestisiya İndeksi</Link>
+              <Link to="/kos/innovation-efficiency" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">İnnovasiya Səmərəlilik İndeksi</Link>
+            </div>
+          </div>
           <Link to="/investor" className="text-white font-medium hover:underline hover:text-white/80">İnvestorlar</Link>
           <Link to="/match" className="text-white font-medium hover:underline hover:text-white/80">Uyğunlaşdırma</Link>
           <Link to="/documents" className="text-white/90 font-medium hover:underline hover:text-white">Sənədlər</Link>

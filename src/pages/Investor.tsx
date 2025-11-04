@@ -1,19 +1,37 @@
 // src/pages/Investor.tsx
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { INVESTORS as STATIC_INVESTORS } from "../data/investorData";
 import { DEMO_INVESTOR } from "../data/demoUsers";
 
 const Investor = () => {
-  const [investorList, setInvestorList] = useState(STATIC_INVESTORS);
+  interface InvestorItem {
+    id: string;
+    name?: string;
+    investorName?: string;
+    sectors?: string[];
+  sectorInterest?: string | number | string[];
+    capitalMin?: number; capitalMax?: number;
+    capitalMinUSD?: number; capitalMaxUSD?: number;
+    riskTolerance?: string | number;
+    experience?: string | number; experienceYears?: number;
+    cooperation?: string | number | string[]; cooperationModel?: string[];
+    investmentHistory?: string | number | string[]; trackRecord?: string[];
+    extraTerms?: string | number;
+    shortDesc?: string | number;
+    social?: string | number;
+    email?: string | number;
+  }
+  const [investorList, setInvestorList] = useState<InvestorItem[]>(STATIC_INVESTORS as unknown as InvestorItem[]);
 
   useEffect(() => {
-    let list = [];
+    let list: InvestorItem[] = [];
     try {
-      list = JSON.parse(localStorage.getItem("investorList") || "[]");
+      const raw = JSON.parse(localStorage.getItem("investorList") || "[]") as unknown;
+      list = Array.isArray(raw) ? (raw as InvestorItem[]) : [];
     } catch { list = []; }
     // Demo investor əlavə et (əgər yoxdursa)
-    const hasDemo = list.some((i:any) => i.id === DEMO_INVESTOR.id);
+  const hasDemo = list.some((i) => i.id === DEMO_INVESTOR.id);
     if (!hasDemo) {
       list = [DEMO_INVESTOR, ...list];
       localStorage.setItem("investorList", JSON.stringify(list));
@@ -37,8 +55,14 @@ const Investor = () => {
                 {('sectors' in investor && Array.isArray(investor.sectors)) && (
                   <p className="text-gray-600 mt-2">Sektorlar: {investor.sectors.join(", ")}</p>
                 )}
-                {('sectorInterest' in investor && (typeof investor.sectorInterest === 'string' || typeof investor.sectorInterest === 'number')) && (
-                  <p className="text-gray-600 mt-2">Sektor marağı: {investor.sectorInterest}</p>
+                {('sectorInterest' in investor) && (
+                  Array.isArray(investor.sectorInterest) ? (
+                    <p className="text-gray-600 mt-2">Sektor marağı: {investor.sectorInterest.join(", ")}</p>
+                  ) : (
+                    (typeof investor.sectorInterest === 'string' || typeof investor.sectorInterest === 'number') && (
+                      <p className="text-gray-600 mt-2">Sektor marağı: {investor.sectorInterest}</p>
+                    )
+                  )
                 )}
                 {('capitalMin' in investor && 'capitalMax' in investor && typeof investor.capitalMin === 'number' && typeof investor.capitalMax === 'number') && (
                   <p className="text-gray-600 mt-2">Sərmayə Aralığı: {investor.capitalMin} - {investor.capitalMax}</p>
@@ -55,8 +79,14 @@ const Investor = () => {
                 {('experienceYears' in investor && typeof investor.experienceYears === 'number') && (
                   <p className="text-gray-600 mt-2">Təcrübə: {investor.experienceYears} il</p>
                 )}
-                {('cooperation' in investor && (typeof investor.cooperation === 'string' || typeof investor.cooperation === 'number')) && (
-                  <p className="text-gray-600 mt-2">Əməkdaşlıq: {investor.cooperation}</p>
+                {('cooperation' in investor) && (
+                  Array.isArray(investor.cooperation) ? (
+                    <p className="text-gray-600 mt-2">Əməkdaşlıq: {investor.cooperation.join(", ")}</p>
+                  ) : (
+                    (typeof investor.cooperation === 'string' || typeof investor.cooperation === 'number') && (
+                      <p className="text-gray-600 mt-2">Əməkdaşlıq: {investor.cooperation}</p>
+                    )
+                  )
                 )}
                 {('cooperationModel' in investor && Array.isArray(investor.cooperationModel)) && (
                   <p className="text-gray-600 mt-2">Əməkdaşlıq modelləri: {investor.cooperationModel.join(", ")}</p>

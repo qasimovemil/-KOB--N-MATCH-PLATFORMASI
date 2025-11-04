@@ -1,11 +1,30 @@
 // src/pages/KOS.tsx
 
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import RiskCalculator from "../components/RiskCalculator";
 import RiskScore from "../components/RiskScore";
-import InvestmentAttractivenessCalculator from "../components/InvestmentAttractivenessCalculator";
-import { FiClipboard, FiTarget, FiTrendingUp } from "react-icons/fi";
+ 
+
+interface KOSItem {
+  id: string;
+  email?: string;
+  name?: string;
+  companyName?: string;
+  sector?: string;
+  employeeCount?: number | string;
+  turnover?: string;
+  exportPotential?: string;
+  innovation?: string;
+  patents?: string;
+  technology?: string;
+  certificates?: string;
+  ecoLabels?: string;
+  projects?: string | string[];
+  projectDesc?: string;
+  projectRisk?: string;
+  projectInvestment?: string;
+  social?: string;
+}
 
 const DEMO_KOS = {
   id: "kos-demo",
@@ -29,19 +48,20 @@ const DEMO_KOS = {
 };
 
 const KOS = () => {
-  const [kosList, setKosList] = useState<any[]>([]);
+  const [kosList, setKosList] = useState<KOSItem[]>([]);
   const [search, setSearch] = useState("");
   const [sector, setSector] = useState("");
   const [risk, setRisk] = useState("");
-  const [activeTab, setActiveTab] = useState<'list' | 'calculator' | 'investment'>('list');
+  
 
   useEffect(() => {
-    let list = [];
+    let list: KOSItem[] = [];
     try {
-      list = JSON.parse(localStorage.getItem("kosList") || "[]");
+      const raw = JSON.parse(localStorage.getItem("kosList") || "[]") as unknown;
+      list = Array.isArray(raw) ? (raw as KOSItem[]) : [];
     } catch { list = []; }
     // Demo user əlavə et (əgər yoxdursa)
-    const hasDemo = list.some((k:any) => k.id === DEMO_KOS.id);
+    const hasDemo = list.some((k: KOSItem) => k.id === DEMO_KOS.id);
     if (!hasDemo) {
       list = [DEMO_KOS, ...list];
       localStorage.setItem("kosList", JSON.stringify(list));
@@ -61,53 +81,9 @@ const KOS = () => {
       <main className="flex-1 bg-gray-50 py-8">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-semibold mb-6 text-primary">KOS Platforması</h2>
-          
-          {/* Tab Navigation */}
-          <div className="flex space-x-4 mb-8">
-            <button
-              onClick={() => setActiveTab('list')}
-              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                activeTab === 'list' 
-                  ? 'bg-primary text-black' 
-                  : 'bg-white text-primary border border-primary hover:bg-primary/10'
-              }`}
-            >
-              <span className="inline-flex items-center gap-2">
-                <FiClipboard className="w-5 h-5" />
-                KOS Siyahısı
-              </span>
-            </button>
-            <button
-              onClick={() => setActiveTab('calculator')}
-              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                activeTab === 'calculator' 
-                  ? 'bg-primary text-black' 
-                  : 'bg-white text-primary border border-primary hover:bg-primary/10'
-              }`}
-            >
-              <span className="inline-flex items-center gap-2">
-                <FiTarget className="w-5 h-5" />
-                Risk Hesablayıcısı
-              </span>
-            </button>
-            <button
-              onClick={() => setActiveTab('investment')}
-              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                activeTab === 'investment' 
-                  ? 'bg-primary text-black' 
-                  : 'bg-white text-primary border border-primary hover:bg-primary/10'
-              }`}
-            >
-              <span className="inline-flex items-center gap-2">
-                <FiTrendingUp className="w-5 h-5" />
-                İnvestisiya İndeksi
-              </span>
-            </button>
-          </div>
 
-          {/* Tab Content */}
-          {activeTab === 'list' ? (
-            <div>
+          {/* KOS Siyahısı */}
+          <div>
               <div className="flex flex-wrap gap-4 mb-6">
                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Ad və ya şirkət axtar..." className="px-3 py-2 border border-primary/30 rounded focus:border-primary focus:outline-none" />
                 <input value={sector} onChange={e => setSector(e.target.value)} placeholder="Sektor..." className="px-3 py-2 border border-primary/30 rounded focus:border-primary focus:outline-none" />
@@ -142,12 +118,7 @@ const KOS = () => {
                   </div>
                 ))}
               </div>
-            </div>
-          ) : activeTab === 'calculator' ? (
-            <RiskCalculator />
-          ) : (
-            <InvestmentAttractivenessCalculator />
-          )}
+          </div>
         </div>
       </main>
     </div>

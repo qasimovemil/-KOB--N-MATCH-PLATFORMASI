@@ -13,6 +13,9 @@ import Profile from "../pages/Profile";
 import InvestmentDocuments from "../pages/InvestmentDocuments";
 import RegionalRisk from "../pages/RegionalRisk";
 import AdminDashboard from "../pages/AdminDashboard";
+import KOSRiskCalculatorPage from "../pages/KOSRiskCalculatorPage";
+import KOSInvestmentIndexPage from "../pages/KOSInvestmentIndexPage";
+import KOSInnovationEfficiencyPage from "../pages/KOSInnovationEfficiencyPage";
 
 
 const ROUTES: RouteObject[] = [
@@ -46,6 +49,18 @@ const ROUTES: RouteObject[] = [
       {
         path: "kos",
         element: <KOS />,
+      },
+      {
+        path: "kos/risk-calculator",
+        element: <KOSRiskCalculatorPage />,
+      },
+      {
+        path: "kos/investment-index",
+        element: <KOSInvestmentIndexPage />,
+      },
+      {
+        path: "kos/innovation-efficiency",
+        element: <KOSInnovationEfficiencyPage />,
       },
       {
         path: "kos/:id",

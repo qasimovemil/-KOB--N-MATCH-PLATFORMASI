@@ -183,7 +183,7 @@ const RiskCalculator: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-lg">
       <div className="text-center mb-8">
-  <h2 className="text-3xl font-bold text-primary mb-2">KOS Risk Hesablayıcısı</h2>
+        <h2 className="text-3xl font-bold text-primary mb-2">KOS Risk Hesablayıcısı</h2>
         <p className="text-gray-600">Şirkətinizin risk profilini hesablayın</p>
       </div>
 
