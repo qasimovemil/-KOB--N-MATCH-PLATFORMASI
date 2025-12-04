@@ -31,6 +31,7 @@ const InnovationEfficiencyIndex: React.FC = () => {
     PBM: '', IYIMP: '', IIG: '', IME: '', EDAI: '', IDG: ''
   });
   const [targetEff, setTargetEff] = useState<string>('1.20');
+  const [hoverKey, setHoverKey] = useState<string | null>(null);
 
   const values = useMemo(() => ({
     IYIP: toNum(form.IYIP),
@@ -121,6 +122,38 @@ const InnovationEfficiencyIndex: React.FC = () => {
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, [k]: e.target.value });
 
+  const tooltips: Record<string, { formula: string; desc: string }> = {
+    IYIP: { formula: '(İnnovasiya investisiya / Ümumi investisiya) × 100', desc: 'KOS-un ümumi kapital qoyuluşunda innovasiya məqsədinə ayrılan vəsaitin payı' },
+    IKIQ: { formula: '(R&D/texnoloji təhsilli əməkdaşlar / Ümumi işçi sayı) × 100', desc: 'Elmi dərəcə və ya texnoloji təhsil alan, Ar-Ge və texnoloji layihələrdə iştirak edən əməkdaşların nisbəti' },
+    ETED: { formula: '(Universitet/institutlarla birgə layihə sayı / Cari innovasiya layihələri) × 100', desc: 'Xarici elmi-tədqiqat təşkilatları, institutlar və universitetlərlə aparılan əməkdaşlığın intensivliyi' },
+    IMAI: { formula: '(Qrant, kredit, dəstək alan layihə sayı / Ümumi layihə sayı) × 100', desc: 'İnnovasiya üçün maliyyə mənbələrinə (qrant, güzəştli kredit, dövlət dəstəyi) çıxış imkanı' },
+    RIT: { formula: '(Texnopark/inkubator xidmətlərindən istifadə / Tələb olunan xidmətlər) × 100', desc: 'KOS-un texnopark, inkubator, laboratoriya və test infrastrukturuna çatırlığı və istifadə dərəcəsi' },
+    PBM: { formula: '(Patent/brend olan məhsul sayı / Ümumi innovativ məhsul sayı) × 100', desc: 'İnnovativ məhsulların qorunan əqli mülkiyyət (patent, müəlliflik, brend) ilə əhatə olunma dərəcəsi' },
+    IYIMP: { formula: '(İxrac olunan innovativ məhsul gəliri / Ümumi innovativ məhsul gəliri) × 100', desc: 'İnnovasiya məhsullarının beynəlxalq bazarlarda rəqabət qabiliyyəti və ixrac payı' },
+    IIG: { formula: 'İnnovasiya gəliri / İnnovasiya investisiyası (0–5x aralığı)', desc: 'İnnovasiyaya yönəldilən hər 1 manatın geri dönüşü; 5x və üzəri maksimal 100 bal hesablanır' },
+    IME: { formula: '(İnnovasiya layihələri ilə yaradılmış iş yeri / Ümumi işçi sayı) × 100', desc: 'İnnovasiya fəaliyyətinin məşğulluğa və yeni peşə sahələrinin yaranmasına təsiri' },
+    EDAI: { formula: '(İnnovasiya ilə əldə olunan əlavə dəyər / Ümumi dövriyyədə əlavə dəyər) × 100', desc: 'İnnovasiya layihələrinin məhsul və xidmət dəyər zəncirində yarattığı əlavə dəyərin payı' },
+    IDG: { formula: '(Davamlı/müntəzəm innovasiya layihələri / Ümumi layihə sayı) × 100', desc: 'İnnovasiya proseslərinin daimi və sistemli aparılması; innovasiya idarəçiliyinin olması' },
+  };
+
+  const InfoIcon: React.FC<{ k: string }> = ({ k }) => (
+    <div
+      className="relative inline-flex items-center ml-1 cursor-help"
+      onMouseEnter={() => setHoverKey(k)}
+      onMouseLeave={() => setHoverKey(null)}
+    >
+      <FiInfo className="w-4 h-4 text-gray-400 hover:text-primary transition-colors" />
+      {hoverKey === k && (
+        <div className="absolute left-0 top-full mt-1 z-50 w-72 bg-white border border-gray-300 rounded-lg shadow-lg p-3 text-xs text-gray-700">
+          <div className="font-semibold text-primary mb-1">Formula:</div>
+          <div className="mb-2">{tooltips[k]?.formula}</div>
+          <div className="font-semibold text-primary mb-1">İzah:</div>
+          <div>{tooltips[k]?.desc}</div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -140,23 +173,23 @@ const InnovationEfficiencyIndex: React.FC = () => {
           <h4 className="font-semibold mb-3">A. İnnovasiya resursları (Inputs)</h4>
           <div className="space-y-3">
             <div>
-              <label className={label}>IYİP — İnnovasiyaya yönələn investisiyalar (%)</label>
+              <label className={label}>IYİP — İnnovasiyaya yönələn investisiyalar (%)<InfoIcon k="IYIP" /></label>
               <input inputMode="decimal" placeholder="0-100" className={inputCls} value={form.IYIP} onChange={set('IYIP')} />
             </div>
             <div>
-              <label className={label}>İKİQ — R&D/texnoloji təhsilli əməkdaşlar (%)</label>
+              <label className={label}>İKİQ — R&D/texnoloji təhsilli əməkdaşlar (%)<InfoIcon k="IKIQ" /></label>
               <input inputMode="decimal" placeholder="0-100" className={inputCls} value={form.IKIQ} onChange={set('IKIQ')} />
             </div>
             <div>
-              <label className={label}>ETƏD — Elmi-tədqiqat əməkdaşlıq (%)</label>
+              <label className={label}>ETƏD — Elmi-tədqiqat əməkdaşlıq (%)<InfoIcon k="ETED" /></label>
               <input inputMode="decimal" placeholder="0-100" className={inputCls} value={form.ETED} onChange={set('ETED')} />
             </div>
             <div>
-              <label className={label}>İMAİ — İnnovasiya maliyyə əlçatanlığı (%)</label>
+              <label className={label}>İMAİ — İnnovasiya maliyyə əlçatanlığı (%)<InfoIcon k="IMAI" /></label>
               <input inputMode="decimal" placeholder="0-100" className={inputCls} value={form.IMAI} onChange={set('IMAI')} />
             </div>
             <div>
-              <label className={label}>RİT — İnnovasiya infrastrukturu təminatı (%)</label>
+              <label className={label}>RİT — İnnovasiya infrastrukturu təminatı (%)<InfoIcon k="RIT" /></label>
               <input inputMode="decimal" placeholder="0-100" className={inputCls} value={form.RIT} onChange={set('RIT')} />
             </div>
           </div>
@@ -167,28 +200,28 @@ const InnovationEfficiencyIndex: React.FC = () => {
           <h4 className="font-semibold mb-3">B. İnnovasiya nəticələri (Outputs)</h4>
           <div className="space-y-3">
             <div>
-              <label className={label}>PBM — Patent/brendli məhsullar (%)</label>
+              <label className={label}>PBM — Patent/brendli məhsullar (%)<InfoIcon k="PBM" /></label>
               <input inputMode="decimal" placeholder="0-100" className={inputCls} value={form.PBM} onChange={set('PBM')} />
             </div>
             <div>
-              <label className={label}>İYİMP — İxrac yönümlü innovasiya məhsulları (%)</label>
+              <label className={label}>İYİMP — İxrac yönümlü innovasiya məhsulları (%)<InfoIcon k="IYIMP" /></label>
               <input inputMode="decimal" placeholder="0-100" className={inputCls} value={form.IYIMP} onChange={set('IYIMP')} />
             </div>
             <div>
-              <label className={label}>İİG — İnnovasiya-investisiya gəlirliliyi (dəfə)</label>
+              <label className={label}>İİG — İnnovasiya-investisiya gəlirliliyi (dəfə)<InfoIcon k="IIG" /></label>
               <input inputMode="decimal" placeholder="məs: 0.0 - 5.0" className={inputCls} value={form.IIG} onChange={set('IIG')} />
               <p className="text-xs text-gray-500 mt-1">0–5x aralığı 0–100 bal kimi normallaşdırılır.</p>
             </div>
             <div>
-              <label className={label}>İME — İnnovasiya məşğulluq effekti (%)</label>
+              <label className={label}>İME — İnnovasiya məşğulluq effekti (%)<InfoIcon k="IME" /></label>
               <input inputMode="decimal" placeholder="0-100" className={inputCls} value={form.IME} onChange={set('IME')} />
             </div>
             <div>
-              <label className={label}>ƏDAİ — Əlavə dəyər artımı indeksi (%)</label>
+              <label className={label}>ƏDAİ — Əlavə dəyər artımı indeksi (%)<InfoIcon k="EDAI" /></label>
               <input inputMode="decimal" placeholder="0-100" className={inputCls} value={form.EDAI} onChange={set('EDAI')} />
             </div>
             <div>
-              <label className={label}>İDG — İnnovasiya davamlılıq göstəricisi (%)</label>
+              <label className={label}>İDG — İnnovasiya davamlılıq göstəricisi (%)<InfoIcon k="IDG" /></label>
               <input inputMode="decimal" placeholder="0-100" className={inputCls} value={form.IDG} onChange={set('IDG')} />
             </div>
           </div>
