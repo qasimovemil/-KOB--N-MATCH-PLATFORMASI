@@ -1,40 +1,60 @@
 // src/components/InvestmentAttractivenessCalculator.tsx
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiTrendingUp, FiDollarSign, FiUsers, FiBarChart2, FiZap, FiTarget, FiPieChart, FiCheckCircle } from 'react-icons/fi';
+import {
+  FiTrendingUp,
+  FiDollarSign,
+  FiUsers,
+  FiBarChart2,
+  FiZap,
+  FiTarget,
+  FiPieChart,
+  FiCheckCircle,
+  FiInfo,
+} from 'react-icons/fi';
 
 type NumOrEmpty = number | '';
 
 interface InvestmentInputs {
   // Maliyyə göstəriciləri (40%)
-  revenue: NumOrEmpty;          // Gəlir (son 3 il ortalaması)
-  profitMargin: NumOrEmpty;     // Mənfəət marjası (%)
-  debtToEquity: NumOrEmpty;     // Borc/Kapital nisbəti
-  currentRatio: NumOrEmpty;     // Cari likvidlik nisbəti
-  roe: NumOrEmpty;             // Kapital rentabelliyi (%)
+  revenue: NumOrEmpty; // Gəlir (son 3 il ortalaması) — manat
+  profitMargin: NumOrEmpty; // Mənfəət marjası (%)
+  debtToEquity: NumOrEmpty; // Borc/Kapital nisbəti
+  currentRatio: NumOrEmpty; // Cari likvidlik nisbəti
+  roe: NumOrEmpty; // Kapital rentabelliyi (%)
 
   // İdarəetmə keyfiyyəti (20%)
-  managementExperience: NumOrEmpty; // Menecment təcrübəsi (1-10)
-  corporateGovernance: NumOrEmpty;  // Korporativ idarəetmə (1-10)
+  managementExperienceYears: NumOrEmpty; // Menecmentin təcrübəsi (illə)
+  corporateGovernance: NumOrEmpty; // Korporativ idarəetmə (1-10)
   financialTransparency: NumOrEmpty; // Maliyyə şəffaflığı (1-10)
 
   // Bazar potensialı (20%)
-  marketSize: NumOrEmpty;       // Bazar həcmi (Manat)
-  marketGrowthRate: NumOrEmpty; // Bazar artım tempı (%)
   competitivePosition: NumOrEmpty; // Rəqabət mövqeyi (1-10)
-  exportPotential: NumOrEmpty;  // İxrac potensialı (Manat)
+  exportVolume: NumOrEmpty; // İxrac həcmi (manat)
 
   // İnnovasiya və texnologiya (10%)
-  rdInvestment: NumOrEmpty;     // R&D investisiyası (gəlirin %-i)
-  patentsCount: NumOrEmpty;     // Patent sayı
-  technologyLevel: NumOrEmpty;  // Texnologiya səviyyəsi (1-10)
+  innovationInvestment: NumOrEmpty; // İnnovativ məhsullara investisiya (manatla)
+  patentsCount: NumOrEmpty; // Patent sayı
 
   // Hüquqi və ESG faktorları (10%)
-  legalCompliance: NumOrEmpty;  // Qanun pozuntularının sayı
-  esgScore: NumOrEmpty;        // ESG balı (1-10)
-  socialImpact: NumOrEmpty;    // Sosial təsir (1-10)
+  legalCompliance: NumOrEmpty; // Qanun pozuntularının sayı
+  esgScore: NumOrEmpty; // ESG balı (1-10)
+  socialImpact: NumOrEmpty; // Sosial təsir (1-10)
 }
+
+type Result = {
+  overallScore: number;
+  breakdown: {
+    financial: number;
+    management: number;
+    market: number;
+    innovation: number;
+    legal: number;
+  };
+  rating: string;
+  recommendations: string[];
+};
 
 const InvestmentAttractivenessCalculator = () => {
   const [inputs, setInputs] = useState<InvestmentInputs>({
@@ -43,35 +63,99 @@ const InvestmentAttractivenessCalculator = () => {
     debtToEquity: 0,
     currentRatio: 1,
     roe: 0,
-    managementExperience: 5,
+
+    managementExperienceYears: 5,
     corporateGovernance: 5,
     financialTransparency: 5,
-    marketSize: 0,
-    marketGrowthRate: 0,
+
     competitivePosition: 5,
-    exportPotential: 5,
-    rdInvestment: 0,
+    exportVolume: 0,
+
+    innovationInvestment: 0,
     patentsCount: 0,
-    technologyLevel: 5,
+
     legalCompliance: 0,
     esgScore: 5,
-    socialImpact: 5
+    socialImpact: 5,
   });
 
-  const [result, setResult] = useState<{
-    overallScore: number;
-    breakdown: {
-      financial: number;
-      management: number;
-      market: number;
-      innovation: number;
-      legal: number;
-    };
-    rating: string;
-    recommendations: string[];
-  } | null>(null);
+  const [result, setResult] = useState<Result | null>(null);
+  const [hoverKey, setHoverKey] = useState<string | null>(null);
 
-  const toNum = (v: NumOrEmpty) => (v === '' || isNaN(Number(v)) ? 0 : Number(v));
+  const toNum = (v: NumOrEmpty) => (v === '' || Number.isNaN(Number(v)) ? 0 : Number(v));
+
+  const tooltips: Record<string, { formula: string; desc: string }> = useMemo(
+    () => ({
+      REVENUE: {
+        formula: 'Son 3 ilin orta gəliri (manat)',
+        desc: 'Şirkətin ölçüsü və sabitliyi barədə ilkin siqnaldır; qiymətləndirmədə loqarifmik normallaşdırma istifadə olunur.',
+      },
+      PROFIT_MARGIN: {
+        formula: '(Xalis mənfəət / Gəlir) × 100',
+        desc: 'Mənfəət marjası şirkətin satış gəlirlərindən əldə etdiyi xalis mənfəətin faizidir.',
+      },
+      DEBT_EQUITY: {
+        formula: 'Ümumi Borclar / Öz Kapital',
+        desc: 'Borc/Kapital nisbəti şirkətin borc yükünü öz kapitalına nisbətdə göstərir; yüksək dəyər daha yüksək maliyyə riski deməkdir.',
+      },
+      CURRENT_RATIO: {
+        formula: 'Dövriyyə Aktivləri / Qısamüddətli Öhdəliklər',
+        desc: 'Cari likvidlik qısamüddətli öhdəlikləri qarşılamaq üçün mövcud aktivlərin nə qədər olduğunu göstərir; 1-dən yuxarı yaxşı hesab olunur.',
+      },
+      ROE: {
+        formula: '(Xalis Mənfəət / Öz Kapital) × 100',
+        desc: 'Öz kapitala gəlir (ROE) sərmayəçilərin qoyduğu kapitaldan əldə olunan gəliri göstərir.',
+      },
+      MGMT_YEARS: {
+        formula: 'Menecmentin ümumi təcrübəsi (illə)',
+        desc: 'Menecment komandasının təcrübə ili çox olduqca idarəetmə riski azalır və bal yüksəlir.',
+      },
+      EXPORT_VOL: {
+        formula: 'İllik ixrac həcmi (manat)',
+        desc: 'İxrac həcmi bazar genişlənməsi və valyuta gəliri baxımından müsbət faktor sayılır (müəyyən limitlə normallaşdırılır).',
+      },
+      INNOV_INVEST: {
+        formula: 'İnnovativ məhsullara investisiya (manatla)',
+        desc: 'İnnovasiya üçün ayrılan vəsait artdıqca innovasiya balı yüksəlir (müəyyən limitlə normallaşdırılır).',
+      },
+      LEGAL: {
+        formula: 'Qanun pozuntularının sayı',
+        desc: 'Pozuntular nə qədər azdırsa, bal bir o qədər yüksəkdir.',
+      },
+    }),
+    []
+  );
+
+  const InfoIcon: React.FC<{ k: string }> = ({ k }) => (
+    <span
+      className="relative inline-flex items-center ml-2 cursor-help"
+      onMouseEnter={() => setHoverKey(k)}
+      onMouseLeave={() => setHoverKey(null)}
+    >
+      <FiInfo className="w-4 h-4 text-gray-400 hover:text-primary transition-colors" />
+      {hoverKey === k && (
+        <span className="absolute left-0 top-full mt-1 z-50 w-72 bg-white border border-gray-300 rounded-lg shadow-lg p-3 text-xs text-gray-700">
+          <div className="font-semibold text-primary mb-1">Formula:</div>
+          <div className="mb-2">{tooltips[k]?.formula}</div>
+          <div className="font-semibold text-primary mb-1">İzah:</div>
+          <div>{tooltips[k]?.desc}</div>
+        </span>
+      )}
+    </span>
+  );
+
+  const handleInputChange = (field: keyof InvestmentInputs, value: NumOrEmpty) => {
+    setInputs((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const getBadgeClass = (score: number) =>
+    score >= 80
+      ? 'bg-green-100 text-green-800'
+      : score >= 65
+      ? 'bg-blue-100 text-blue-800'
+      : score >= 50
+      ? 'bg-yellow-100 text-yellow-800'
+      : 'bg-red-100 text-red-800';
 
   const calculateScore = () => {
     // Maliyyə göstəriciləri balı (40%)
@@ -81,97 +165,73 @@ const InvestmentAttractivenessCalculator = () => {
     const currentRatio = toNum(inputs.currentRatio);
     const roe = toNum(inputs.roe);
 
-    const financialScore = Math.min(100,
-      (Math.log(revenue + 1) / Math.log(10000000) * 20) + // Revenue normalization
-      (Math.min(profitMargin, 30) / 30 * 25) + // Profit margin (max 30%)
-      (Math.max(0, (3 - debtToEquity)) / 3 * 20) + // Lower debt is better
-      (Math.min(currentRatio, 3) / 3 * 15) + // Current ratio (optimal around 2-3)
-      (Math.min(roe, 25) / 25 * 20) // ROE (max 25%)
+    const financialScore = Math.min(
+      100,
+      (Math.log(revenue + 1) / Math.log(10_000_000)) * 20 +
+        (Math.min(profitMargin, 30) / 30) * 25 +
+        (Math.max(0, 3 - debtToEquity) / 3) * 20 +
+        (Math.min(currentRatio, 3) / 3) * 15 +
+        (Math.min(roe, 25) / 25) * 20
     );
 
-    // İdarəetmə balı (20%)
-    const managementExperience = toNum(inputs.managementExperience);
+    // İdarəetmə balı (20%) — illə input
+    const mgmtYears = toNum(inputs.managementExperienceYears);
     const corporateGovernance = toNum(inputs.corporateGovernance);
     const financialTransparency = toNum(inputs.financialTransparency);
-    const managementScore =
-      (managementExperience * 10 * 0.4) +
-      (corporateGovernance * 10 * 0.35) +
-      (financialTransparency * 10 * 0.25);
 
-    // Bazar potensialı balı (20%)
-    const marketSize = toNum(inputs.marketSize);
-    const marketGrowthRate = toNum(inputs.marketGrowthRate);
+    // Menecment ili üçün 0..20 il aralığını 1..10 bal kimi normallaşdırırıq
+    const mgmtYearsScore10 = Math.min(mgmtYears, 20) / 20 * 10;
+
+    const managementScore =
+      mgmtYearsScore10 * 10 * 0.4 + corporateGovernance * 10 * 0.35 + financialTransparency * 10 * 0.25;
+
+    // Bazar potensialı balı (20%) — ixrac həcmi
     const competitivePosition = toNum(inputs.competitivePosition);
-    const exportPotential = toNum(inputs.exportPotential);
-    const marketScore = Math.min(100,
-      (Math.log(marketSize + 1) / Math.log(1_000_000_000) * 25) + // Market size (Manat)
-      (Math.min(marketGrowthRate, 20) / 20 * 25) + // Growth rate (max 20%)
-      (competitivePosition * 10 * 0.25) +
-      // ExportPotential manat: 0–500k → 0–1
-      (Math.min(exportPotential, 500_000) / 500_000 * 25)
+    const exportVolume = toNum(inputs.exportVolume);
+
+    const marketScore = Math.min(
+      100,
+      competitivePosition * 10 * 0.4 + (Math.min(exportVolume, 500_000) / 500_000) * 60
     );
 
-    // İnnovasiya balı (10%)
-    const rdInvestment = toNum(inputs.rdInvestment);
+    // İnnovasiya balı (10%) — innovativ məhsullara investisiya (manatla)
+    const innovationInvestment = toNum(inputs.innovationInvestment);
     const patentsCount = toNum(inputs.patentsCount);
-    const technologyLevel = toNum(inputs.technologyLevel);
-    const innovationScore = Math.min(100,
-      (Math.min(rdInvestment, 10) / 10 * 30) + // R&D investment (max 10%)
-      (Math.min(patentsCount, 10) / 10 * 30) + // Patents (diminishing returns)
-      (technologyLevel * 10 * 0.4)
+
+    const innovationScore = Math.min(
+      100,
+      (Math.min(innovationInvestment, 500_000) / 500_000) * 60 + (Math.min(patentsCount, 10) / 10) * 40
     );
 
     // Hüquqi və ESG balı (10%)
     const legalCompliance = toNum(inputs.legalCompliance);
     const esgScore = toNum(inputs.esgScore);
     const socialImpact = toNum(inputs.socialImpact);
-    const legalScore = Math.min(100,
-      (Math.max(0, (10 - legalCompliance)) / 10 * 40) + // Fewer violations is better
-      (esgScore * 10 * 0.35) +
-      (socialImpact * 10 * 0.25)
+
+    const legalScore = Math.min(
+      100,
+      (Math.max(0, 10 - legalCompliance) / 10) * 40 + esgScore * 10 * 0.35 + socialImpact * 10 * 0.25
     );
 
-    // Çəkili ortalama
     const overallScore = Math.round(
-      (financialScore * 0.4) +
-      (managementScore * 0.2) +
-      (marketScore * 0.2) +
-      (innovationScore * 0.1) +
-      (legalScore * 0.1)
+      financialScore * 0.4 + managementScore * 0.2 + marketScore * 0.2 + innovationScore * 0.1 + legalScore * 0.1
     );
 
-    // Rating təyin et
     let rating = '';
     let recommendations: string[] = [];
 
     if (overallScore >= 80) {
       rating = 'Çox Cəlbedici (AAA)';
-      recommendations = [
-        'Yüksək investisiya potensialı',
-        'Güclü maliyyə göstəriciləri',
-        'Stabil bazar mövqeyi'
-      ];
+      recommendations = ['Yüksək investisiya potensialı', 'Güclü maliyyə göstəriciləri', 'Stabil bazar mövqeyi'];
     } else if (overallScore >= 65) {
       rating = 'Cəlbedici (AA)';
-      recommendations = [
-        'Yaxşı investisiya fürsəti',
-        'Bəzi sahələrdə təkmilləşdirmə ehtiyacı',
-        'Orta müddətli perspektiv'
-      ];
+      recommendations = ['Yaxşı investisiya fürsəti', 'Bəzi sahələrdə təkmilləşdirmə ehtiyacı', 'Orta müddətli perspektiv'];
     } else if (overallScore >= 50) {
       rating = 'Orta (A)';
-      recommendations = [
-        'Diqqətli investisiya tələb olunur',
-        'Risk faktorlarının detallı təhlili lazımdır',
-        'Potensial mövcuddur, lakin risklidir'
-      ];
+      recommendations = ['Diqqətli investisiya tələb olunur', 'Risk faktorlarının detallı təhlili lazımdır', 'Potensial mövcuddur, lakin risklidir'];
     } else {
       rating = 'Aşağı Cəlbedicilik (B)';
-      recommendations = [
-        'Yüksək risk səviyyəsi',
-        'Fundamental problemlərin həlli lazımdır',
-        'İnvestisiya tövsiyə olunmur'
-      ];
+      recommendations = ['Yüksək risk səviyyəsi', 'Fundamental problemlərin həlli lazımdır', 'İnvestisiya tövsiyə olunmur'];
     }
 
     setResult({
@@ -181,22 +241,17 @@ const InvestmentAttractivenessCalculator = () => {
         management: Math.round(managementScore),
         market: Math.round(marketScore),
         innovation: Math.round(innovationScore),
-        legal: Math.round(legalScore)
+        legal: Math.round(legalScore),
       },
       rating,
-      recommendations
+      recommendations,
     });
-  };
-
-  const handleInputChange = (field: keyof InvestmentInputs, value: NumOrEmpty) => {
-    // Boş bırakma (""), 0’a zorlamaz; kullanıcı sayıyı tamamen sildiyse state’i '' tutarız.
-    setInputs(prev => ({ ...prev, [field]: value }));
   };
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded-xl shadow-lg">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-primary mb-2 inline-flex items-center gap-2">
+        <h2 className="text-3xl font-bold text-primary mb-2 inline-flex items-center gap-2 justify-center">
           <FiTrendingUp className="w-7 h-7" />
           İnvestisiya Cəlbedicilik İndeksi
         </h2>
@@ -210,11 +265,14 @@ const InvestmentAttractivenessCalculator = () => {
           <div className="bg-blue-50 p-6 rounded-lg">
             <h3 className="text-xl font-semibold text-blue-800 mb-4 inline-flex items-center gap-2">
               <FiDollarSign className="w-5 h-5" />
-              Maliyyə Göstəriciləri (40%)
+              Maliyyə Göstəriciləri
             </h3>
+
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Gəlir (Manat)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Gəlir (son 3 il ortalaması, manat) <InfoIcon k="REVENUE" />
+                </label>
                 <input
                   type="number"
                   value={inputs.revenue}
@@ -222,38 +280,56 @@ const InvestmentAttractivenessCalculator = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Mənfəət Marjası (%)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mənfəət marjası (%) <InfoIcon k="PROFIT_MARGIN" />
+                </label>
                 <input
                   type="number"
                   step="0.1"
                   value={inputs.profitMargin}
-                  onChange={(e) => handleInputChange('profitMargin', e.target.value === '' ? '' : Number(e.target.value))}
+                  onChange={(e) =>
+                    handleInputChange('profitMargin', e.target.value === '' ? '' : Number(e.target.value))
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Borc/Kapital Nisbəti</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Borc/Kapital nisbəti <InfoIcon k="DEBT_EQUITY" />
+                </label>
                 <input
                   type="number"
                   step="0.1"
                   value={inputs.debtToEquity}
-                  onChange={(e) => handleInputChange('debtToEquity', e.target.value === '' ? '' : Number(e.target.value))}
+                  onChange={(e) =>
+                    handleInputChange('debtToEquity', e.target.value === '' ? '' : Number(e.target.value))
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Cari Likvidlik Nisbəti</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Cari Likvidlik Nisbəti <InfoIcon k="CURRENT_RATIO" />
+                </label>
                 <input
                   type="number"
                   step="0.1"
                   value={inputs.currentRatio}
-                  onChange={(e) => handleInputChange('currentRatio', e.target.value === '' ? '' : Number(e.target.value))}
+                  onChange={(e) =>
+                    handleInputChange('currentRatio', e.target.value === '' ? '' : Number(e.target.value))
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">ROE (%)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  ROE (%) <InfoIcon k="ROE" />
+                </label>
                 <input
                   type="number"
                   step="0.1"
@@ -269,17 +345,56 @@ const InvestmentAttractivenessCalculator = () => {
           <div className="bg-green-50 p-6 rounded-lg">
             <h3 className="text-xl font-semibold text-green-800 mb-4 inline-flex items-center gap-2">
               <FiUsers className="w-5 h-5" />
-              İdarəetmə Keyfiyyəti (20%)
+              İdarəetmə Keyfiyyəti
             </h3>
-            <div className="grid md:grid-cols-3 gap-4">
+
+            <div className="grid md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Menecmentin Təcrübəsi (illə)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Menecmentin təcrübəsi (illə) <InfoIcon k="MGMT_YEARS" />
+                </label>
                 <input
                   type="number"
-                  value={inputs.managementExperience}
-                  onChange={(e) => handleInputChange('managementExperience', e.target.value === '' ? '' : Number(e.target.value))}
+                  min={0}
+                  value={inputs.managementExperienceYears}
+                  onChange={(e) =>
+                    handleInputChange(
+                      'managementExperienceYears',
+                      e.target.value === '' ? '' : Number(e.target.value)
+                    )
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Korporativ idarəetmə (1-10)</label>
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  value={inputs.corporateGovernance}
+                  onChange={(e) =>
+                    handleInputChange('corporateGovernance', e.target.value === '' ? '' : Number(e.target.value))
+                  }
+                  className="w-full"
+                />
+                <span className="text-sm text-gray-500">{inputs.corporateGovernance}/10</span>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Maliyyə şəffaflığı (1-10)</label>
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  value={inputs.financialTransparency}
+                  onChange={(e) =>
+                    handleInputChange('financialTransparency', e.target.value === '' ? '' : Number(e.target.value))
+                  }
+                  className="w-full"
+                />
+                <span className="text-sm text-gray-500">{inputs.financialTransparency}/10</span>
               </div>
             </div>
           </div>
@@ -288,83 +403,130 @@ const InvestmentAttractivenessCalculator = () => {
           <div className="bg-purple-50 p-6 rounded-lg">
             <h3 className="text-xl font-semibold text-purple-800 mb-4 inline-flex items-center gap-2">
               <FiBarChart2 className="w-5 h-5" />
-              Bazar Potensialı (20%)
+              Bazar Potensialı
             </h3>
-            <div className="grid md:grid-cols-2 gap-4">
+
+            <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Bazar Həcmi (Manat)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Rəqabət Mövqeyi (1-10)</label>
                 <input
-                  type="number"
-                  value={inputs.marketSize}
-                  onChange={(e) => handleInputChange('marketSize', e.target.value === '' ? '' : Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
+                  type="range"
+                  min="1"
+                  max="10"
+                  value={inputs.competitivePosition}
+                  onChange={(e) =>
+                    handleInputChange('competitivePosition', e.target.value === '' ? '' : Number(e.target.value))
+                  }
+                  className="w-full"
                 />
+                <span className="text-sm text-gray-500">{inputs.competitivePosition}/10</span>
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Bazar Artım Tempı (%)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  İxrac həcmi (manat) <InfoIcon k="EXPORT_VOL" />
+                </label>
                 <input
                   type="number"
-                  step="0.1"
-                  value={inputs.marketGrowthRate}
-                  onChange={(e) => handleInputChange('marketGrowthRate', e.target.value === '' ? '' : Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">İxrac Potensialı (manat)</label>
-                <input
-                  type="number"
-                  value={inputs.exportPotential}
-                  onChange={(e) => handleInputChange('exportPotential', e.target.value === '' ? '' : Number(e.target.value))}
+                  value={inputs.exportVolume}
+                  onChange={(e) =>
+                    handleInputChange('exportVolume', e.target.value === '' ? '' : Number(e.target.value))
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
                 />
               </div>
             </div>
           </div>
 
-          {/* İnnovasiya və ESG */}
+          {/* İnnovasiya və Hüquqi/ESG */}
           <div className="grid md:grid-cols-2 gap-6">
+            {/* İnnovasiya */}
             <div className="bg-orange-50 p-6 rounded-lg">
               <h3 className="text-lg font-semibold text-orange-800 mb-4 inline-flex items-center gap-2">
                 <FiZap className="w-5 h-5" />
-                İnnovasiya (10%)
+                İnnovasiya
               </h3>
+
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">R&D İnvestisiyası (%)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    İnnovativ məhsullara investisiya (manatla) <InfoIcon k="INNOV_INVEST" />
+                  </label>
                   <input
                     type="number"
-                    step="0.1"
-                    value={inputs.rdInvestment}
-                    onChange={(e) => handleInputChange('rdInvestment', e.target.value === '' ? '' : Number(e.target.value))}
+                    value={inputs.innovationInvestment}
+                    onChange={(e) =>
+                      handleInputChange('innovationInvestment', e.target.value === '' ? '' : Number(e.target.value))
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Patent Sayı</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Patent sayı</label>
                   <input
                     type="number"
                     value={inputs.patentsCount}
-                    onChange={(e) => handleInputChange('patentsCount', e.target.value === '' ? '' : Number(e.target.value))}
+                    onChange={(e) =>
+                      handleInputChange('patentsCount', e.target.value === '' ? '' : Number(e.target.value))
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Texnologiya Səviyyəsi (1-10)</label>
-                  <input
-                    type="range"
-                    min="1"
-                    max="10"
-                    value={inputs.technologyLevel}
-                    onChange={(e) => handleInputChange('technologyLevel', Number(e.target.value))}
-                    className="w-full"
-                  />
-                  <span className="text-sm text-gray-500">{inputs.technologyLevel}/10</span>
                 </div>
               </div>
             </div>
 
-           
+            {/* Hüquqi və ESG */}
+            <div className="bg-rose-50 p-6 rounded-lg">
+              <h3 className="text-lg font-semibold text-rose-800 mb-4 inline-flex items-center gap-2">
+                <FiPieChart className="w-5 h-5" />
+                Hüquqi & ESG
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Qanun pozuntularının sayı <InfoIcon k="LEGAL" />
+                  </label>
+                  <input
+                    type="number"
+                    value={inputs.legalCompliance}
+                    onChange={(e) =>
+                      handleInputChange('legalCompliance', e.target.value === '' ? '' : Number(e.target.value))
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">ESG balı (1-10)</label>
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    value={inputs.esgScore}
+                    onChange={(e) => handleInputChange('esgScore', e.target.value === '' ? '' : Number(e.target.value))}
+                    className="w-full"
+                  />
+                  <span className="text-sm text-gray-500">{inputs.esgScore}/10</span>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Sosial təsir (1-10)</label>
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    value={inputs.socialImpact}
+                    onChange={(e) =>
+                      handleInputChange('socialImpact', e.target.value === '' ? '' : Number(e.target.value))
+                    }
+                    className="w-full"
+                  />
+                  <span className="text-sm text-gray-500">{inputs.socialImpact}/10</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <button
@@ -378,78 +540,67 @@ const InvestmentAttractivenessCalculator = () => {
 
         {/* Sağ tərəf - Nəticələr */}
         <div className="lg:col-span-1">
-          {result ? (
-            <motion.div
-              className="space-y-6"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              {/* Ümumi Bal */}
-              <div className="bg-primary/5 p-6 rounded-xl text-center">
-                <h3 className="text-2xl font-bold text-primary mb-4">Ümumi İndeks</h3>
-                <div className="text-5xl font-bold text-primary mb-2">{result.overallScore}</div>
-                <div className="text-lg text-gray-600 mb-4">/100</div>
-                <div className={`px-4 py-2 rounded-full font-semibold ${result.overallScore >= 80 ? 'bg-green-100 text-green-800' :
-                    result.overallScore >= 65 ? 'bg-blue-100 text-blue-800' :
-                      result.overallScore >= 50 ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                  }`}>
-                  {result.rating}
-                </div>
-              </div>
+          <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 inline-flex items-center gap-2">
+              <FiCheckCircle className="w-5 h-5" />
+              Nəticə
+            </h3>
 
-              {/* Breakdown */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200">
-                <h4 className="text-lg font-semibold mb-4">Təfərrüat</h4>
-                <div className="space-y-3">
-                  {Object.entries(result.breakdown).map(([key, value]) => {
-                    const labels = {
-                      financial: 'Maliyyə',
-                      management: 'İdarəetmə',
-                      market: 'Bazar',
-                      innovation: 'İnnovasiya',
-                      legal: 'Hüquqi & ESG'
-                    };
+            {!result ? (
+              <div className="text-gray-600 text-sm">
+                Məlumatları daxil edib <span className="font-semibold">Hesabla</span> düyməsinə basın.
+              </div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25 }}
+                className="space-y-4"
+              >
+                <div className="text-center">
+                  <div className="text-4xl font-extrabold text-primary">{result.overallScore}</div>
+                  <div className="text-sm text-gray-600 mt-1">Ümumi bal</div>
+                  <div className="mt-2 inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-semibold bg-white border border-gray-200">
+                    {result.rating}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  {(
+                    [
+                      ['financial', 'Maliyyə'],
+                      ['management', 'İdarəetmə'],
+                      ['market', 'Bazar'],
+                      ['innovation', 'İnnovasiya'],
+                      ['legal', 'Hüquqi & ESG'],
+                    ] as const
+                  ).map(([k, label]) => {
+                    const score = result.breakdown[k];
                     return (
-                      <div key={key} className="flex justify-between items-center">
-                        <span className="text-gray-600">{labels[key as keyof typeof labels]}</span>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-20 bg-gray-200 rounded-full h-2">
-                            <div
-                              className="bg-primary h-2 rounded-full transition-all duration-500"
-                              style={{ width: `${value}%` }}
-                            />
-                          </div>
-                          <span className="font-medium">{value}/100</span>
-                        </div>
+                      <div key={k} className="flex items-center justify-between gap-3">
+                        <div className="text-sm text-gray-700">{label}</div>
+                        <div className={`text-xs font-semibold px-2 py-1 rounded ${getBadgeClass(score)}`}>{score}</div>
                       </div>
                     );
                   })}
                 </div>
-              </div>
 
-              {/* Tövsiyələr */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200">
-                <h4 className="text-lg font-semibold mb-4">Tövsiyələr</h4>
-                <ul className="space-y-2">
-                  {result.recommendations.map((rec, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <FiCheckCircle className="text-primary mt-0.5" />
-                      <span className="text-gray-600">{rec}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center text-gray-400">
-                <FiPieChart className="w-24 h-24 mx-auto mb-4 opacity-50" />
-                <p className="text-lg">Məlumatları daxil edib<br />İndeksi hesablayın</p>
-              </div>
-            </div>
-          )}
+                <div>
+                  <div className="text-sm font-semibold text-gray-800 mb-2">Tövsiyələr</div>
+                  <ul className="space-y-1">
+                    {result.recommendations.map((r, idx) => (
+                      <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                        <span className="mt-0.5 text-primary">
+                          <FiCheckCircle />
+                        </span>
+                        <span>{r}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -134,6 +134,9 @@ const InnovationEfficiencyIndex: React.FC = () => {
     IME: { formula: '(İnnovasiya layihələri ilə yaradılmış iş yeri / Ümumi işçi sayı) × 100', desc: 'İnnovasiya fəaliyyətinin məşğulluğa və yeni peşə sahələrinin yaranmasına təsiri' },
     EDAI: { formula: '(İnnovasiya ilə əldə olunan əlavə dəyər / Ümumi dövriyyədə əlavə dəyər) × 100', desc: 'İnnovasiya layihələrinin məhsul və xidmət dəyər zəncirində yarattığı əlavə dəyərin payı' },
     IDG: { formula: '(Davamlı/müntəzəm innovasiya layihələri / Ümumi layihə sayı) × 100', desc: 'İnnovasiya proseslərinin daimi və sistemli aparılması; innovasiya idarəçiliyinin olması' },
+    DEBT_EQUITY: { formula: 'Borc / Öz kapital', desc: 'Borc/kapital nisbəti = Ümumi borclar ÷ Öz kapital' },
+    CURRENT_RATIO: { formula: 'Dövriyyə aktivləri / Qısamüddətli öhdəliklər', desc: 'Cari likvidlik əmsalı = Dövriyyə aktivləri ÷ Qısamüddətli öhdəliklər' },
+    ROA: { formula: '(Xalis mənfəət / Ümumi aktivlər) × 100%', desc: 'Müəssisənin rentabelliyi (Return on Assets) = Xalis mənfəət ÷ Ümumi aktivlər × 100%' },
   };
 
   const InfoIcon: React.FC<{ k: string }> = ({ k }) => (
@@ -312,6 +315,27 @@ const InnovationEfficiencyIndex: React.FC = () => {
             </div>
             <p className="text-xs text-gray-500">Qeyd: Alternativ olaraq, eyni hədəf üçün Resurslar indeksini {target>0? ( (outputsIndex/Math.max(target,0.0001)).toFixed(1)): '—' } səviyyəsinə endirmək kifayətdir.</p>
           </div>
+        </div>
+      </div>
+
+      {/* Əlavə maliyyə göstəriciləri (info-only) */}
+      <div className="mt-6">
+        <div className={card}>
+          <h4 className="font-semibold mb-3">Əlavə maliyyə göstəriciləri</h4>
+          <ul className="space-y-3 text-sm text-gray-700">
+            <li className="flex items-start gap-2">
+              <div className="flex-1">Borc/kapital nisbəti</div>
+              <div className="flex-shrink-0"><InfoIcon k="DEBT_EQUITY" /></div>
+            </li>
+            <li className="flex items-start gap-2">
+              <div className="flex-1">Cari likvidlik əmsalı</div>
+              <div className="flex-shrink-0"><InfoIcon k="CURRENT_RATIO" /></div>
+            </li>
+            <li className="flex items-start gap-2">
+              <div className="flex-1">Müəssisənin rentabelliyi (ROA)</div>
+              <div className="flex-shrink-0"><InfoIcon k="ROA" /></div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

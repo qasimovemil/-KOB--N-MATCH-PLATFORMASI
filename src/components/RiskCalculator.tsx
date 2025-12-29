@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import RiskScore from './RiskScore';
-import { FiDollarSign, FiBarChart2, FiTarget, FiSliders } from 'react-icons/fi';
+import { FiDollarSign, FiBarChart2, FiTarget, FiSliders, FiInfo } from 'react-icons/fi';
 
 type NumOrEmpty = number | '';
 
@@ -18,10 +18,8 @@ interface RiskInputs {
   // Qeyri-maliyyə göstəriciləri
   sirketYasi: NumOrEmpty;
   menecmentTecrubesi: NumOrEmpty;
-  sektorRiski: NumOrEmpty;
   ixracPotensiali: NumOrEmpty;
   innovasiyaBalı: NumOrEmpty;
-  esgFaktorlari: NumOrEmpty;
 }
 
 const RiskCalculator: React.FC = () => {
@@ -33,14 +31,13 @@ const RiskCalculator: React.FC = () => {
     rentabellik: 0,
     sirketYasi: 0,
     menecmentTecrubesi: 0,
-    sektorRiski: 3,
     ixracPotensiali: 0,
     innovasiyaBalı: 0,
-    esgFaktorlari: 3
   });
 
   const [calculatedScore, setCalculatedScore] = useState<number>(0);
   const [showResult, setShowResult] = useState(false);
+  const [hoverKey, setHoverKey] = useState<string | null>(null);
 
   // Hesablanmış risk balına görə şərh və tövsiyələr
   function getRiskAdvisory(score: number) {
@@ -91,8 +88,7 @@ const RiskCalculator: React.FC = () => {
     if (toNum(inputs.borcKapitalNisbeti) > 3) recs.push('Borc/Kapital nisbətini azaldın (xərcləri optimizə edin, kapitalı gücləndirin).');
     if (toNum(inputs.likvidlik) < 5) recs.push('Likvidlik dərəcəsini artırın (nağd axınını və ehtiyatları yaxşılaşdırın).');
     if (toNum(inputs.rentabellik) < 10) recs.push('Rentabelliyi artırın (marjanı yüksəldin, səmərəliliyi artırın).');
-    if (toNum(inputs.sektorRiski) >= 4) recs.push('Daha aşağı riskli sektor/seqmentləri nəzərdən keçirin.');
-    if (toNum(inputs.esgFaktorlari) <= 2) recs.push('ESG göstəricilərini gücləndirin (idarəetmə, ekoloji və sosial siyasətlər).');
+    // sektorRiski and esgFaktorlari removed per request
     if (toNum(inputs.menfeət) <= 0) recs.push('Mənfəətliliyi müsbətə çevirin (gəliri artırın, xərcləri azaldın).');
     if (toNum(inputs.innovasiyaBalı) < 5_000) recs.push('İnnovasiyaya investisiyanı artırın (R&D, texnoloji yüksəliş).');
     if (toNum(inputs.ixracPotensiali) < 10_000) recs.push('İxrac potensialını artırın (yeni bazarlar, satış kanalları).');
@@ -109,17 +105,40 @@ const RiskCalculator: React.FC = () => {
   // Risk hesablama formulası
   const toNum = (v: NumOrEmpty) => (v === '' || isNaN(Number(v)) ? 0 : Number(v));
 
+  const tooltips: Record<string, { formula: string; desc: string }> = {
+    DEBT_EQUITY: { formula: 'Borc / Öz kapital', desc: 'Borc/kapital nisbəti = Ümumi borclar ÷ Öz kapital' },
+    CURRENT_RATIO: { formula: 'Dövriyyə aktivləri / Qısamüddətli öhdəliklər', desc: 'Cari likvidlik əmsalı = Dövriyyə aktivləri ÷ Qısamüddətli öhdəliklər' },
+    ROA: { formula: '(Xalis mənfəət / Ümumi aktivlər) × 100%', desc: 'Müəssisənin rentabelliyi = Xalis mənfəət ÷ Ümumi aktivlər × 100%' },
+  };
+
+  const InfoIcon: React.FC<{ k: string }> = ({ k }) => (
+    <div
+      className="relative inline-flex items-center ml-2 cursor-help"
+      onMouseEnter={() => setHoverKey(k)}
+      onMouseLeave={() => setHoverKey(null)}
+    >
+      <FiInfo className="w-4 h-4 text-gray-400 hover:text-primary transition-colors" />
+      {hoverKey === k && (
+        <div className="absolute left-0 top-full mt-1 z-50 w-64 bg-white border border-gray-300 rounded-lg shadow-lg p-3 text-xs text-gray-700">
+          <div className="font-semibold text-primary mb-1">Formula:</div>
+          <div className="mb-2">{tooltips[k]?.formula}</div>
+          <div className="font-semibold text-primary mb-1">İzah:</div>
+          <div>{tooltips[k]?.desc}</div>
+        </div>
+      )}
+    </div>
+  );
+
   const calculateRiskScore = (): number => {
     // Yardımçı
     const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
-    // Çəkilər (ümumi 100%)
+    // Çəkilər (ümumi 100%) — `sektorRiski` və `esg` çıxarıldı, ağırlıqlar yenidən normallaşdırıldı
     const weights = {
-      maliyye: 0.4,      // 40%
-      idareEtme: 0.2,    // 20%
+      maliyye: 0.45,      // 45%
+      idareEtme: 0.25,    // 25%
       bazarPotensiali: 0.2, // 20%
       innovasiya: 0.1,   // 10%
-      esg: 0.1          // 10%
     };
 
     // Maliyyə balı (1-5 arası)
@@ -142,28 +161,21 @@ const RiskCalculator: React.FC = () => {
     const idare0to1 = (ageNorm * 0.4) + (expNorm * 0.6);
     const idareBali = 1 + idare0to1 * 4; // 1–5
 
-    // Bazar potensialı balı
-    // sektorRiski: 1 (aşağı risk) → 5 (yüksək risk). 1 yaxşı, 5 pis → tərs çeviririk və 0–1 aralığına salırıq.
-    const sektorSkoru01 = clamp01((6 - toNum(inputs.sektorRiski)) / 5);
-    // ixracPotensiali: manat ilə. 0–500k aralığında 0–1-ə xəritələyirik (üstü 1-ə sıxılır)
+    // Bazar potensialı balı — sektorRiski çıxarıldığı üçün yalnız ixracPotensiali istifadə olunur
     const ixracNorm = clamp01(toNum(inputs.ixracPotensiali) / 500_000);
-    const bazar0to1 = (sektorSkoru01 * 0.7) + (ixracNorm * 0.3);
+    const bazar0to1 = ixracNorm;
     const bazarBali = 1 + bazar0to1 * 4; // 1–5
 
     // İnnovasiya balı (manat ilə çəkilən xərclər) → 0–100k = 0–1
     const innovNorm = clamp01(toNum(inputs.innovasiyaBalı) / 100_000);
     const innovasiyaBaliNormalized = 1 + innovNorm * 4; // 1–5
 
-    // ESG balı (1–5 arası)
-    const esgBaliNormalized = Math.min(5, Math.max(1, toNum(inputs.esgFaktorlari)));
-
-    // Çəkili ortalama hesablama
+    // Çəkili ortalama hesablama (ESG və sektorRiski çıxarıldı)
     const weightedScore =
       (maliyyeBali * weights.maliyye) +
       (idareBali * weights.idareEtme) +
       (bazarBali * weights.bazarPotensiali) +
-      (innovasiyaBaliNormalized * weights.innovasiya) +
-      (esgBaliNormalized * weights.esg);
+      (innovasiyaBaliNormalized * weights.innovasiya);
 
     // 1-5 arası balı 0-100 arasına çevir (risk üçün tərsinə çevir)
     return Math.round((5 - weightedScore) * 25);
@@ -225,7 +237,8 @@ const RiskCalculator: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Borc/Kapital Nisbəti
+                    Borc/Kapital Nisbəti
+                    <InfoIcon k="DEBT_EQUITY" />
                 </label>
                 <input
                   type="number"
@@ -239,7 +252,8 @@ const RiskCalculator: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Likvidlik dərəcəsi(%)
+                    Likvidlik dərəcəsi(%)
+                    <InfoIcon k="CURRENT_RATIO" />
                 </label>
                 <input
                   type="range"
@@ -254,7 +268,8 @@ const RiskCalculator: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Rentabellik (%)
+                    Rentabellik (%)
+                    <InfoIcon k="ROA" />
                 </label>
                 <input
                   type="number"
@@ -277,7 +292,7 @@ const RiskCalculator: React.FC = () => {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Şirkətin Yaşı (il)
+                  şirkətin fəaliyyət müddəti (il)
                 </label>
                 <input
                   type="number"
@@ -301,22 +316,6 @@ const RiskCalculator: React.FC = () => {
                   className="w-full"
                 />
                 <span className="text-sm text-gray-500">{inputs.menecmentTecrubesi}/25</span>
-              </div>
-
-              {/* Sektor riski */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Sektor Riski (1: Aşağı, 5: Yüksək)
-                </label>
-                <input
-                  type="range"
-                  min="1"
-                  max="5"
-                  value={inputs.sektorRiski}
-                  onChange={(e) => handleInputChange('sektorRiski', Number(e.target.value))}
-                  className="w-full"
-                />
-                <span className="text-sm text-gray-500">{inputs.sektorRiski}/5</span>
               </div>
 
               <div>
@@ -343,21 +342,7 @@ const RiskCalculator: React.FC = () => {
                 />
               </div>
 
-              {/* ESG faktörləri */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  ESG Faktorları (1–5)
-                </label>
-                <input
-                  type="range"
-                  min="1"
-                  max="5"
-                  value={inputs.esgFaktorlari}
-                  onChange={(e) => handleInputChange('esgFaktorlari', Number(e.target.value))}
-                  className="w-full"
-                />
-                <span className="text-sm text-gray-500">{inputs.esgFaktorlari}/5</span>
-              </div>
+              {/* ESG removed per request */}
             </div>
           </div>
 
